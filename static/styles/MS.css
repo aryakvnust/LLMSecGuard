@@ -1,0 +1,245 @@
+@font-face {
+  font-family: Interfont;
+  src: url(./font/Inter-VariableFont_slnt\,wght.ttf);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+
+  height: 6vh;
+  background-color: #3C3C3C;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+header .login {
+  width: 10%;
+  height: 80%;
+  border-radius: 7px;
+  background-color: #3E43E8;
+  color: white;
+  font-family: Interfont;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15;
+  border: none;
+  margin-right: 60px;
+  position: relative;
+}
+
+header .login a {
+  text-decoration: none;
+  color: white;
+  font-family: Interfont;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15;
+}
+
+header .login::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #3E43E8;
+  border-radius: 7px;
+  z-index: -1;
+  transition: all 0.6s;
+}
+
+header .login:hover::after {
+  transform: scaleX(1.2) scaleY(1.2);
+  opacity: 0;
+  z-index: 2;
+}
+
+header nav {
+  width: 30%;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-family: Interfont;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15;
+  color: white;
+}
+
+header nav ul a {
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 15;
+  color: white;
+}
+
+header nav ul li {
+  transition: all 0.5s;
+}
+
+header nav ul li:hover {
+  transform: scale(1.1);
+}
+
+body {
+  background: #2d2d30;
+  font-family: main;
+  color: white;
+}
+
+.headings {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+.headings-2 {
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.row-1 {
+  display: flex;
+  justify-content: center;
+  margin-top: 7rem;
+}
+
+.row-3 {
+  display: flex;
+  justify-content: center;
+  margin-top: 6rem;
+}
+
+.blue-box {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  background-color: #3e43e8;
+}
+
+.white-box {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  background-color: #d9d9d9;
+}
+
+.first-container {
+  width: 75%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 4rem;
+}
+
+.second-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.col-items {
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+.col-ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.col-ul li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.p-container {
+  width: 69%;
+  margin-top: 8rem;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.final-part {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.final-part a {
+  color: #0984e3;
+}
+
+/* APPLYING MEDIA QUERIES */
+@media (max-width: 768px) {
+  .menu {
+    display: none;
+    position: absolute;
+    background-color: #3c3c3c;
+    right: 0;
+    left: 0;
+    text-align: center;
+    padding: 16px 0;
+  }
+
+  .menu li+li {
+    margin-top: 12px;
+  }
+
+  input[type="checkbox"]:checked~.menu {
+    display: block;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .first-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .second-container img {
+    width: 460px;
+  }
+}
+
+@media (max-width: 1078px) {
+  .second-container img {
+    width: 800px;
+  }
+}

@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static "styles/main.css" %}">
+    <link rel="stylesheet" href="{% static "styles/prompt.css" %}">
+    <link rel="stylesheet" href="{% static "header/header.css" %}">
+
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="./Models.html">Models</a></li>
+                <li><a href="./vulner.html">Vulnerabilities</a></li>
+                <li><a href="./scoreboard.html">ScoreBoard</a></li>
+            </ul>
+        </nav>
+        <button class="login" id="login"><a>Login</a></button>
+        <script>
+            document.getElementById("login").addEventListener("click", () => {
+                window.location.href = "./login.html";
+            });
+        </script>
+    </header>
+
+
+    <main class="Prompt">
+        <div class="Wrapper">
+            <h1 class="CodeGeneration">Code Generation</h1>
+
+            <form class="Prompt" action="/dispatcher/createprompt/" method="post">
+                <!-- <input class="TypeYourPrompt" placeholder="Type Your Prompt ..." /> -->
+                <textarea class="TypeYourPrompt" placeholder="Type Your Prompt ..." name="prompt" cols="30" rows="10"></textarea>
+                {% csrf_token %}
+                <button class="Button Generate">Generate</button>
+
+            </form>
+
+            <div class="OrAnalyzeYourOwnCodeInstead">
+                <span>or </span>
+                <a href="./analyze.html">Analyze your own code</a>
+                <span> instead.</span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

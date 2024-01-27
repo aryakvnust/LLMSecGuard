@@ -1,0 +1,82 @@
+main.CodeAnalysis {
+    max-width: unset;
+    padding: 36px 42px;
+}
+
+main.CodeAnalysis>.Wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+main.CodeAnalysis pre code {
+    max-height: 80vh;
+    position: sticky;
+    top: 84px;
+}
+
+main.CodeAnalysis pre code,
+main.CodeAnalysis pre code * {
+    font-family: 'Courier New', Courier, monospace !important;
+}
+
+
+main.CodeAnalysis aside {
+    padding-top: 33px;
+}
+
+main.CodeAnalysis aside>div {
+    border: 1px solid var(--text-dimmed);
+    padding: 26px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+}
+
+main.CodeAnalysis aside label {
+    text-align: right;
+    font-size: 10px;
+    color: var(--text-dimmed);
+    display: block;
+    width: 100%;
+}
+
+main.CodeAnalysis aside .Explain .Content {
+    line-height: 1.4rem;
+    text-align: justify;
+}
+
+
+main.CodeAnalysis aside .Vulnerability {
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+main.CodeAnalysis aside .Vulnerability .Header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    cursor: pointer;
+}
+
+main.CodeAnalysis aside .Vulnerability .Content {
+    height: 0;
+    overflow: hidden;
+    transition: all 0.5s;
+}
+
+main.CodeAnalysis aside .Vulnerability.Open .Content {
+    height: 500px;
+    margin-bottom: 24px;
+    overflow-y: auto;
+}
+
+main.CodeAnalysis aside .Vulnerability.Open .Content>ul {
+    margin-bottom: 14px;
+}
+
+.CodeAnalysis .Home {
+    text-align: center;
+    margin-top: 36px;
+}
