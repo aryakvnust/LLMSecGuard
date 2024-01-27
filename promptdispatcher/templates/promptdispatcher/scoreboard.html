@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "styles/score.css" %}">
+    <title>source board</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="./Models.html">Models</a></li>
+                <li><a href="./vulner.html">Vulnerabilities</a></li>
+                <li><a href="./scoreboard.html">ScoreBoard</a></li>
+            </ul>
+        </nav>
+        <button class="login" id="login"><a>Login</a></button>
+        <script>
+            document.getElementById("login").addEventListener("click", () => {
+                window.location.href = "./login.html";
+            });
+        </script>
+    </header>
+    <div class="content">
+        <h4>Score Board</h4>
+        <div class="container">
+            <div class="left">
+                {% for aic in aics%}
+                <p><a href="#">{{ aic.model.name }}</a></p>
+                {% endfor %}
+            </div>
+            <div class="right">
+                {% for aic in aics%}
+                <a href="./Modelsummary.html">
+                    <div class="num1" style="width: {{ aic.score }}%;"></div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <table
+            style="width: 40%; color: white; background-color: #2d3135; border: solid rgba(255, 255, 255, 0.838); border-radius: 20px;  text-align: left;margin-bottom:1% ;">
+            <thead>
+                <tr>
+                    <th style="padding-left: 30px;"> LLM </th>
+                    <th> Score </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aic in aics%}
+                <tr>
+                    <td style="padding-left: 30px;"> {{ aic.model.name }} </td>
+                    <td style="width: 70px;"> {{ aic.score }} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </table>
+        <p>Or <a href="./prompt.html"> Generate Code</a> instead.</p>
+    </div>
+
+</body>
+
+</html>

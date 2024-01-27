@@ -10,8 +10,10 @@ supported_models = (
 )
 
 class LLM(models.Model):
+    name = models.CharField(max_length=100)
     model = models.CharField(max_length=100, choices=[(model, model) for model in supported_models])
     api_key = models.CharField(max_length=100)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     
     def get_model(self):
         identifier = "::".join([self.model, self.api_key])
@@ -19,7 +21,7 @@ class LLM(models.Model):
         return model
     
     def __str__(self) -> str:
-        return self.model
+        return self.name
         
     
 class Results(models.Model):
@@ -33,3 +35,7 @@ class Results(models.Model):
         results = Results.objects.filter(created_at__gte=last_month)
         average_issue_count = results.values('model').annotate(avg_issue_count=Avg('issue_count')).order_by('-avg_issue_count').first()
         return LLM.objects.get(id=average_issue_count['model'])
+    
+class RecordedIssuws(models.Model):
+    issue = models.CharField(max_length=100)
+    result = models.ForeignKey(Results, on_delete=models.CASCADE)
