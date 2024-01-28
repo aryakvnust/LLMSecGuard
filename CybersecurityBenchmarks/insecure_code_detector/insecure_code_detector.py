@@ -13,7 +13,7 @@ import os
 import re
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, make_dataclass
 from pathlib import Path
 
 from typing import List, Optional
@@ -82,6 +82,7 @@ async def analyze(
     generated_code: str,
     code_before: Optional[str] = None,
     code_after: Optional[str] = None,
+    custom_patterns: list[InsecurePattern] | None = None,
 ) -> List[Issue]:
     """
     Checks if the string contains insecure code.
@@ -102,26 +103,37 @@ async def analyze(
 
     # Create tasks for each analyzer
     tasks = []
-
+    
+    print("ANALYZE =====" , custom_patterns) # REMOVE DEBUG
+    if custom_patterns:
+        for i, cp in enumerate(custom_patterns):
+            p = InsecurePattern(
+                description=cp.get('description'),
+                cwe_id=cp.get('cwe_id'),
+                rule=cp.get('rule'),
+                severity=cp.get('severity'),
+                analyzer=cp.get('analyzer'),
+                regexes=cp.get('regexes'),
+                pattern_id=cp.get('pattern_id')
+            )
+            custom_patterns[i] = p
+        
+        print(custom_patterns[0].analyzer)
+        
     # regex analyze
-    if oss.ENABLE_REGEX_ANALYZER and (
-        Analyzer.REGEX in LANGUAGE_ANALYZER_MAP.get(language, [])
-    ):
-        result += _regex_analyze(generated_code, code_context)
+    if oss.ENABLE_REGEX_ANALYZER and (Analyzer.REGEX in LANGUAGE_ANALYZER_MAP.get(language, [])):
+        r_cp = list(filter(lambda x: x.analyzer == Analyzer.REGEX, custom_patterns)) if custom_patterns else []
+        result += _regex_analyze(generated_code, code_context, custom_patterns=r_cp)
 
     # weggli analyze
-    if oss.ENABLE_WEGGLI and (
-        Analyzer.WEGGLI in LANGUAGE_ANALYZER_MAP.get(language, [])
-    ):
-        tasks.append(asyncio.create_task(_weggli_analyze(generated_code, code_context)))
+    if oss.ENABLE_WEGGLI and (Analyzer.WEGGLI in LANGUAGE_ANALYZER_MAP.get(language, [])):
+        w_cp = list(filter(lambda x: x.analyzer == Analyzer.WEGGLI, custom_patterns)) if custom_patterns else []
+        
+        tasks.append(asyncio.create_task(_weggli_analyze(generated_code, code_context, custom_patterns=w_cp)))
 
     # SEMGREP analyze
-    if oss.ENABLE_SEMGREP and (
-        Analyzer.SEMGREP in LANGUAGE_ANALYZER_MAP.get(language, [])
-    ):
-        tasks.append(
-            asyncio.create_task(_semgrep_analyze(generated_code, code_context))
-        )
+    if oss.ENABLE_SEMGREP and (Analyzer.SEMGREP in LANGUAGE_ANALYZER_MAP.get(language, [])):
+        tasks.append(asyncio.create_task(_semgrep_analyze(generated_code, code_context)))
 
     # Gather results from all tasks
     results_from_tasks = await asyncio.gather(*tasks)
@@ -175,8 +187,12 @@ def _search_pattern(pattern: InsecurePattern, generated_code: str) -> List[Issue
     return []
 
 
-def _regex_analyze(generated_code: str, code_context: CodeContext) -> List[Issue]:
+def _regex_analyze(generated_code: str, code_context: CodeContext, custom_patterns = None) -> List[Issue]:
     patterns = insecure_patterns.load(code_context.language, Analyzer.REGEX)
+    
+    if custom_patterns:
+        patterns += custom_patterns
+        
     with ThreadPoolExecutor() as executor:
         tasks = [
             executor.submit(_search_pattern, pattern, generated_code)
@@ -295,9 +311,15 @@ async def _execute_weggli_task(
 async def _weggli_analyze(
     generated_code: str,
     code_context: CodeContext,
+    custom_patterns: list[InsecurePattern] | None = None,
 ) -> list[Issue]:
     # get all weggli patterns to be analyzed
     patterns = insecure_patterns.load(code_context.language, Analyzer.WEGGLI)
+    
+    if custom_patterns:
+        patterns += custom_patterns
+        
+    print("WEGGLI ANALYZE =====" , custom_patterns) # REMOVE DEBUG
 
     command_base = oss.WEGGLI_COMMAND + (
         ["-X"] if code_context.language == Language.CPP else []

@@ -32,6 +32,7 @@ class InsecurePattern:
     severity: str
     regexes: list[str] | None = None
     pattern_id: str | None = None
+    analyzer: str = ""
 
 
 @functools.lru_cache(maxsize=None)

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from CybersecurityBenchmarks.insecure_code_detector import insecure_code_detector as icd
+from CybersecurityBenchmarks.insecure_code_detector.insecure_patterns import InsecurePattern
 
 import json
 
@@ -30,10 +31,15 @@ async def analyze_code_get():
 async def analyze_code():
     code = request.json['code']
     language = request.json['language']
+    patterns = request.json.get('patterns')
+    
+    if patterns is None:
+        patterns = []
     
     if language is None:
         language = "cpp"
-    result = await icd.analyze(language, code)
+        
+    result = await icd.analyze(language, code, custom_patterns=patterns)
     
     return jsonify(result)
 
