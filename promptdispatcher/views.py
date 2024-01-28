@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from CybersecurityBenchmarks.benchmark import llm
 from requests import post, get
 from .models import LLM, Results
+from codeanalyzer.models import Engine
 
 from django.db.models import Avg
 from datetime import datetime, timedelta
+
 
 class CreatePrompt(APIView):
     def get(self, request):
@@ -30,10 +32,11 @@ class CreatePrompt(APIView):
         # code = debug['code']
         # issues = debug['results']
         
-        issues = post("http://localhost:5000/analyze_code", json={
-            "code": code,
-            "language": "cpp"
-        }).json()
+        issues = Engine.objects.get(id=1).dispatch('cpp', code)
+        # issues = post("http://localhost:5000/analyze_code", json={
+        #     "code": code,
+        #     "language": "cpp"
+        # }).json()
         
         # if len(issues) > 0:
         #     query_ = "Try to fix these vulnerabilities in the following code:\n"
