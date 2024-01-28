@@ -78,7 +78,7 @@ main.Analyze .Code .Button {
 main.Analyze .Code .Options {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     padding-bottom: 4px;
 }
 

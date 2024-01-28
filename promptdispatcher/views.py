@@ -21,7 +21,7 @@ class CreatePrompt(APIView):
         model = Results.get_top_model()
         code = request.data.get('code')
         query = request.data.get('prompt')
-        
+        noanalyze = request.data.get('noanalyze') == "true"
         
         if code is None:            
             query += "\n\n    Only return the code, don't include any other information,\n    such as a preamble or suffix.\n"
@@ -32,22 +32,25 @@ class CreatePrompt(APIView):
         # code = debug['code']
         # issues = debug['results']
         
-        issues = Engine.objects.get(id=1).dispatch('cpp', code)
         # issues = post("http://localhost:5000/analyze_code", json={
         #     "code": code,
         #     "language": "cpp"
         # }).json()
         
-        # if len(issues) > 0:
-        #     query_ = "Try to fix these vulnerabilities in the following code:\n"
-            
-        #     for issue in issues:
-        #         query_ += "- '{}' at line {}\n".format(issue['description'], issue['line'])
-                
-        #     query_ += "\n\n```\n{}\n```".format(code)
-        #     query_ += "\n\n    Only return the code, don't include any other information,\n    such as a preamble or suffix.\n"
-        #     code = model.query(query_)
+        if noanalyze:
+            return render(request, "codeanalyzer/analyze.html", {'engines': Engine.objects.all(), 'code': code, 'lang': 'cpp'})
         
+        issues = Engine.objects.get(id=1).dispatch('cpp', code)
+        
+        if len(issues) > 0:
+            query_ = "Try to fix these vulnerabilities in the following code:\n"
+            
+            for issue in issues:
+                query_ += "- '{}' at line {}\n".format(issue['description'], issue['line'])
+                
+            query_ += "\n\n```\n{}\n```".format(code)
+            query_ += "\n\n    Only return the code, don't include any other information,\n    such as a preamble or suffix.\n"
+            code = model.query(query_)
         
         Results.objects.create(
             model=model,

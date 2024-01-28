@@ -108,9 +108,11 @@ main.Prompt h1 {
 main.Prompt .Prompt {
     max-width: 709px;
     width: 100%;
-    display: flex;
+    display: grid;
     justify-content: stretch;
     align-items: stretch;
+    grid-template-columns: auto 152px;
+    grid-template-rows: 57px 57px;
     gap: 22px;
 }
 

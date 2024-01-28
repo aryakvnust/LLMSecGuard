@@ -9,6 +9,10 @@ main.CodeAnalysis>.Wrapper {
     gap: 24px;
 }
 
+main.CodeAnalysis pre {
+    max-width: 65vw;
+}
+
 main.CodeAnalysis pre code {
     max-height: 80vh;
     position: sticky;
