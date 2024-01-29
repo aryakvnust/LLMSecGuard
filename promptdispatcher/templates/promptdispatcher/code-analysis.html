@@ -1,12 +1,8 @@
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% load static %} {% include "base.html" %} {% include "navbar.html" %} 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+{% block head %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" />
     <link rel="stylesheet" href="{% static "styles/main.css" %}">
     <link rel="stylesheet" href="{% static "styles/code-analysis.css" %}">
@@ -25,118 +21,99 @@
             background-color: #ffd9d9;
         }
     </style>
-</head>
+{% endblock head %}
 
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="./Models.html">Models</a></li>
-                <li><a href="./vulner.html">Vulnerabilities</a></li>
-                <li><a href="./scoreboard.html">ScoreBoard</a></li>
-            </ul>
-        </nav>
-        <button class="login" id="login"><a>Login</a></button>
-        <script>
-            document.getElementById("login").addEventListener("click", () => {
-                window.location.href = "./login.html";
-            });
-        </script>
-    </header>
+{% block content %}
+<main class="CodeAnalysis">
+    <h1> Code Analysis </h1>
 
+    <div class="Wrapper">
+        <pre class="language-{{lang}} ">
+            <code> {{ code }} </code>
+        </pre>
 
-    <main class="CodeAnalysis">
-        <h1> Code Analysis </h1>
+        <aside>
+            <div class="Explain" id="explain">
+                <div class="Content" data-loaded="false">
 
-        <div class="Wrapper">
-            <pre class="language-{{lang}} ">
-                <code> {{ code }} </code>
-            </pre>
+                    <!-- Lorem Ipsum in HTML -->
+                    {% if issues  %}
+                    <p>
+                        I've detected these issues in your code:
+                        {% for issue in issues %}
+                        <b><br>{{ issue.cwe_id }} <br></b>
+                        {% endfor %}
+                    </p>
+                    {% else %}
+                    <p> I've detected <b> no </b> vulnerabilities in your code. </p>
+                    {% endif %}
 
-            <aside>
-                <div class="Explain" id="explain">
-                    <div class="Content" data-loaded="false">
+                    <pre>
+                        <!-- <code>#include &lt;stdio.h&gt;</code> -->
+                    </pre>
+                </div>
+                <label>Powered By GPT-3.5 Turbo</label>
+            </div>
 
-                        <!-- Lorem Ipsum in HTML -->
-                        {% if issues  %}
-                        <p>
-                            I've detected these issues in your code:
-                            {% for issue in issues %}
-                            <b><br>{{ issue.cwe_id }} <br></b>
-                            {% endfor %}
-                        </p>
-                        {% else %}
-                        <p> I've detected <b> no </b> vulnerabilities in your code. </p>
-                        {% endif %}
-
-                        <pre>
-                            <!-- <code>#include &lt;stdio.h&gt;</code> -->
-                        </pre>
-                    </div>
-                    <label>Powered By GPT-3.5 Turbo</label>
+            
+            {% for issue in issues %}
+            <div class="Vulnerability">
+                <div class="Header">
+                    <div>{{ issue.cwe_id }}</div>
                 </div>
 
-                
-                {% for issue in issues %}
-                <div class="Vulnerability">
-                    <div class="Header">
-                        <div>{{ issue.cwe_id }}</div>
-                    </div>
-
-                    <div class="Content" data-loaded="false">
-                        <p>Detected {{ issue.description }}:</p>
-                        <ul class="lines">
-                            <li data-line="12">{{ issue.line }} </li>
-                        </ul>
-                        <div class="Describe">
-                            <p> Engine: {{ issue.analyzer }} </p>
-                            <p> Description: {{ issue.description }} </p>
-                        </div>
+                <div class="Content" data-loaded="false">
+                    <p>Detected {{ issue.description }}:</p>
+                    <ul class="lines">
+                        <li data-line="12">{{ issue.line }} </li>
+                    </ul>
+                    <div class="Describe">
+                        <p> Engine: {{ issue.analyzer }} </p>
+                        <p> Description: {{ issue.description }} </p>
                     </div>
                 </div>
-                {% endfor %}
-            </aside>
-        </div>
+            </div>
+            {% endfor %}
+        </aside>
+    </div>
 
-        <div class="Home">
-            <a href="/">Home</a>
-        </div>
+    <div class="Home">
+        <a href="/">Home</a>
+    </div>
 
-    </main>
+</main>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <script defer>
-        hljs.highlightAll();
-        hljs.initLineNumbersOnLoad();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+<script defer>
+    hljs.highlightAll();
+    hljs.initLineNumbersOnLoad();
 
-        document.querySelectorAll(".lines li").forEach((li) => {
-            li.addEventListener("mouseover", () => {
-                const { value } = li.attributes['data-line'];
-                const line = parseInt(value);
-                const lineElement = document.querySelector(`pre code tbody tr:nth-of-type(${line}) td.hljs-ln-line.hljs-ln-code`);
-                lineElement.classList.add('red');
-            });
-
-            li.addEventListener("mouseleave", () => {
-                const { value } = li.attributes['data-line'];
-                const line = parseInt(value);
-                const lineElement = document.querySelector(`pre code tbody tr:nth-of-type(${line}) td.hljs-ln-line.hljs-ln-code`);
-                lineElement.classList.remove('red');
-            });
+    document.querySelectorAll(".lines li").forEach((li) => {
+        li.addEventListener("mouseover", () => {
+            const { value } = li.attributes['data-line'];
+            const line = parseInt(value);
+            const lineElement = document.querySelector(`pre code tbody tr:nth-of-type(${line}) td.hljs-ln-line.hljs-ln-code`);
+            lineElement.classList.add('red');
         });
 
-        document.querySelectorAll("aside .Vulnerability").forEach((item) => {
-            item.querySelector(".Header").addEventListener("click", () => {
-                item.classList.toggle("Open");
-            })
-        })
-    </script>
-</body>
+        li.addEventListener("mouseleave", () => {
+            const { value } = li.attributes['data-line'];
+            const line = parseInt(value);
+            const lineElement = document.querySelector(`pre code tbody tr:nth-of-type(${line}) td.hljs-ln-line.hljs-ln-code`);
+            lineElement.classList.remove('red');
+        });
+    });
 
-</html>
+    document.querySelectorAll("aside .Vulnerability").forEach((item) => {
+        item.querySelector(".Header").addEventListener("click", () => {
+            item.classList.toggle("Open");
+        })
+    })
+</script>
+{% endblock content %}

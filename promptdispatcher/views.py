@@ -2,9 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from CybersecurityBenchmarks.benchmark import llm
 from requests import post, get
-from .models import LLM, Results
+from .models import LLM, LLMSummary, Results, RecordedIssuws
 from codeanalyzer.models import Engine
 
 from django.db.models import Avg
@@ -52,10 +51,17 @@ class CreatePrompt(APIView):
             query_ += "\n\n    Only return the code, don't include any other information,\n    such as a preamble or suffix.\n"
             code = model.query(query_)
         
-        Results.objects.create(
+        result = Results.objects.create(
             model=model,
             issue_count=len(issues),
         )
+        
+        for issue in issues:
+            RecordedIssuws.objects.create(
+                result=result,
+                issue=issue['cwe_id']
+            )
+        
         
         if request.query_params.get('api') is not None:
             return Response({
@@ -84,3 +90,22 @@ class ScoreBoard(APIView):
             average_issue_count[i]['score'] = (aic['avg_issue_count'] / max_count * 100)
             
         return render(request, 'promptdispatcher/scoreboard.html', {'aics': average_issue_count})
+    
+class LLMList(APIView):
+    def get(self, request):
+        if request.query_params.get('api') is not None:
+            return Response(LLM.objects.all())
+            
+        return render(request, 'promptdispatcher/models.html', {'llms': LLM.objects.all()})
+    
+class LLMDetails(APIView):
+    def get(self, request, llm_type):
+        print(llm_type)
+        if request.query_params.get('api') is not None:
+            return Response(LLM.objects.all())
+        
+        
+        return render(request, 'promptdispatcher/model.html', {
+            'summary': LLMSummary.objects.get(model_type=llm_type),
+            'llms': LLM.objects.filter(model__contains=llm_type)
+        })

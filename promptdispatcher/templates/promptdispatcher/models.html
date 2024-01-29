@@ -1,0 +1,21 @@
+{% load static %} {% include "base.html" %} {% include "navbar.html" %} {% block content %}
+<!-- NAVIGATION MENU -->
+<section class="headings" style="margin-bottom: 40px;">
+  <h1>Model</h1>
+</section>
+{% for llm in llms %}
+<div class="row">
+  <div class="container">
+    <div class="col-1">
+      <p>{{llm.type}}</p>
+      <p class="gpt-center">{{ llm.name }}</p>
+    </div>
+    <div class="col-2">
+      <a href="{{ llm.get_type }}">
+        <p style="color: white">{{ llm.get_summary.summary }}</p>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+{% endfor %} {% endblock content%}

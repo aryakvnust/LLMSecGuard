@@ -1,0 +1,39 @@
+{% load static %} {% include "base.html" %} {% include "navbar.html" %} 
+
+{% block head %}
+<style>
+.container {
+  flex-direction: column;
+}
+
+.no-align {
+  align-items: flex-start;
+}
+</style>
+{% endblock head%}
+
+
+{% block content %}
+<!-- NAVIGATION MENU -->
+<section class="headings" style="margin-bottom: 40px">
+  <h1>{{ summary.model_type }}</h1>
+</section>
+
+<div class="row">
+  <div class="container">{% autoescape off %} {{summary.description}} {% endautoescape %}</div>
+</div>
+<div class="divider"></div>
+
+<section class="headings" style="margin-bottom: 40px">
+  <h1>Supported Models: </h1>
+</section>
+
+<div class="row">
+  <div class="container no-align">
+    <ul>
+      {% for model in llms %}
+      <li>{{ model.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock content%}

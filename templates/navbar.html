@@ -1,0 +1,17 @@
+{% block nav %}
+<header>
+  <nav>
+    <ul>
+      <li><a href="/dispatcher/scoreboard/">ScoreBoard</a></li>
+      <li><a href="/llms/models/">Models</a></li>
+      <li><a href="/vulnerabilities/">Vulnerabilities</a></li>
+    </ul>
+  </nav>
+  <button class="login" id="login"><a>Login</a></button>
+  <script>
+    document.getElementById("login").addEventListener("click", () => {
+      window.location.href = "./login.html";
+    });
+  </script>
+</header>
+{% endblock nav %}

@@ -9,6 +9,8 @@ supported_models = (
     "ANYSCALE::meta-llama/Llama-2-13b-chat-hf",
 )
 
+model_types = [m.split("::")[1].split("/")[0] for m in supported_models]
+
 class LLM(models.Model):
     name = models.CharField(max_length=100)
     model = models.CharField(max_length=100, choices=[(model, model) for model in supported_models])
@@ -20,9 +22,20 @@ class LLM(models.Model):
         model = llm.create(identifier)
         return model
     
+    def get_type(self):
+        return self.model.split("::")[1].split("/")[0]
+    
+    def get_summary(self):
+        return LLMSummary.objects.get(model_type=self.get_type())
+    
     def __str__(self) -> str:
         return self.name
         
+class LLMSummary(models.Model):
+    model_type = models.CharField(max_length=100, choices=[(m, m) for m in model_types], unique=True)
+    summary = models.TextField()
+    description = models.TextField()
+    
 class Results(models.Model):
     model = models.ForeignKey(LLM, on_delete=models.CASCADE)
     issue_count = models.IntegerField()

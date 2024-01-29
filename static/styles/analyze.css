@@ -76,6 +76,7 @@ main.Analyze .Code .Button {
 }
 
 main.Analyze .Code .Options {
+    max-width: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
