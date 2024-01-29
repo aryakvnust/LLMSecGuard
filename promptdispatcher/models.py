@@ -23,11 +23,11 @@ class LLM(models.Model):
     def __str__(self) -> str:
         return self.name
         
-    
 class Results(models.Model):
     model = models.ForeignKey(LLM, on_delete=models.CASCADE)
     issue_count = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    benchmark = models.BooleanField(default=False)
     
     @staticmethod
     def get_top_model():
