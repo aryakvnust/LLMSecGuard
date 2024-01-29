@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from requests import post, get
 from .models import LLM, LLMSummary, Results, RecordedIssuws
 from codeanalyzer.models import Engine
 
 from django.db.models import Avg
 from datetime import datetime, timedelta
+from django.db.models.functions import TruncDay
+from django.db.models import Sum
 
 
 class CreatePrompt(APIView):
@@ -100,12 +101,21 @@ class LLMList(APIView):
     
 class LLMDetails(APIView):
     def get(self, request, llm_type):
-        print(llm_type)
         if request.query_params.get('api') is not None:
             return Response(LLM.objects.all())
-        
+
+        summary = LLMSummary.objects.get(model_type=llm_type)
+        llms = LLM.objects.filter(model__contains=llm_type)
+
+        results = Results.objects.filter(model__in=llms)
+        results_count_by_day = results.annotate(day=TruncDay('created_at')).values('day').annotate(count=Sum('issue_count')).order_by('day')
+        max_issue_count = max(map(lambda rcd: rcd['count'], results_count_by_day))
         
         return render(request, 'promptdispatcher/model.html', {
-            'summary': LLMSummary.objects.get(model_type=llm_type),
-            'llms': LLM.objects.filter(model__contains=llm_type)
+            'summary': summary,
+            'llms': llms,
+            'results_count_by_day': [{
+                    'date': rcd['day'].strftime("%Y/%m/%d"),
+                    'count': 100 - (rcd['count'] / max_issue_count * 100),
+                } for rcd in results_count_by_day]
         })
