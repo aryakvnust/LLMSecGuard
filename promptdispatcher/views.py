@@ -21,7 +21,7 @@ class CreatePrompt(APIView):
         model = Results.get_top_model()
         code = request.data.get('code')
         query = request.data.get('prompt')
-        noanalyze = request.data.get('noanalyze') == "true"
+        noanalyze = request.data.get('noanalyze') != "true"
         
         if code is None:            
             query += "\n\n    Only return the code, don't include any other information,\n    such as a preamble or suffix.\n"

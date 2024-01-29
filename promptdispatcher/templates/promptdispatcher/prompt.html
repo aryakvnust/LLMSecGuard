@@ -17,8 +17,11 @@
       <textarea class="TypeYourPrompt" placeholder="Type Your Prompt ..." name="prompt" cols="30" rows="10"></textarea>
       {% csrf_token %}
 
-      <button class="Button Generate" name="noanalyze" value="true">Generate</button>
-      <button class="Button Generate" style="max-width: unset; grid-column: 1/3;">Generate &amp; Analyze</button>
+      <button class="Button Generate">Generate</button>
+      <label>
+        <input type="checkbox" name="noanalyze" value="true" checked style="max-width: unset; grid-column: 1/3;" />
+        Analyze Code
+      </label>
     </form>
 
     <div class="OrAnalyzeYourOwnCodeInstead">
