@@ -5,7 +5,7 @@ LLMGuard is an open-source framework developed to equip developers with code sol
 
 **Prompt Agent:**
 This component is responsible for receiving a prompt and providing other components with the code model's response. 
-Upon receipt of a prompt, ``Prompt Agent'' undertakes the task of engineering a response.
+Upon receipt of a prompt, "Prompt Agent" undertakes the task of engineering a response.
 Particularly, it can reformulate a prompt, pass the prompt to code models and collect the response, and forward the result to other components.
 
 **Security Agent:**
