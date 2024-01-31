@@ -51,4 +51,18 @@ In the end, it measures the security properties of LLMs (e.g., measures code sec
 1. Create a superuser by running ``python manage.py createsuperuser``
 2. Add API key of a supported LLM in ``/admin/`` under **Prompt Dispatcher > LLMs**
 3. Navigate to main page of the tool (``http://localhost:8000``)
-4. Type a prompt and wait for the response 
+4. Type a prompt and wait for the response
+
+## Included Virtual Machine
+To run the pre-installed VM you'll need to download the OVA file from [this](https://mega.nz/file/AudFDRIb#CjqIM8U9EpWo1eSulbq9iUxWOWwMfRRhnJuL1FUpQCY) link.
+
+1. Download and extract the OVA file.
+2. Install a Virutal Machine Manager software (we're using vmware, any software that can import the ova file will work)
+3. Import the VM
+4. Figure out the IP Address
+5. Run the server via the script provided at ``/home/llmguard/llmguard/entry.sh``
+6. Make sure nginx is running ``systemctl start nginx``
+7. Find the IP of your machine ``ifconfig``
+8. Navigate to the machine using a browser
+
+*NOTE*: Details on how to update the VM and additional information is included at the login screen (``~/.profile``)
