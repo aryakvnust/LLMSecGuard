@@ -49,20 +49,20 @@ In the end, it measures the security properties of LLMs (e.g., measures code sec
 
 ## Usage
 1. Create a superuser by running ``python manage.py createsuperuser``
-2. Add API key of a supported LLM in ``/admin/`` under **Prompt Dispatcher > LLMs**
-3. Navigate to main page of the tool (``http://localhost:8000``)
-4. Type a prompt and wait for the response
+2. Run the backend by executing ``python manage.py runserver 0.0.0.0:8000``
+3. Add API key of a supported LLM in ``/admin/`` under **Prompt Dispatcher > LLMModels**
+4. Run add/run the analyzer server by navigating to ``http://localhost:8000/analyzers/analyzer``
+5. Install front-end dependencies by first navigating into the front-end directory ``cd frontend`` and then running ``npm i``
+6. Run the frontend development server by running ``npm run serve``
+7. Navigate to main page of the tool (``http://localhost:8080`` or the url provided by VueCLI)
+8. Type a prompt and wait for the response
 
-## Included Virtual Machine
-To run the pre-installed VM you'll need to download the OVA file from [this](https://mega.nz/file/AudFDRIb#CjqIM8U9EpWo1eSulbq9iUxWOWwMfRRhnJuL1FUpQCY) link.
+## Deployment
+1. To Deploy the front-end run ``npm run build`` to create build file.
+2. Change the settings of the back-end server by setting ``DEBUG = False`` in ``backend/backend/settings.py``
+3. Create a suitable nginx config that maps ``/api/`` to ``http://localhost:8000/api/``
+4. Collect Django static for using Django-Admin in production ``python manage.py collectstatic``
+5. Run nginx and the backend as a service
 
-1. Download and extract the OVA file.
-2. Install a Virutal Machine Manager software (we're using vmware, any software that can import the ova file will work)
-3. Import the VM
-4. Figure out the IP Address
-5. Run the server via the script provided at ``/home/llmguard/llmguard/entry.sh``
-6. Make sure nginx is running ``systemctl start nginx``
-7. Find the IP of your machine ``ifconfig``
-8. Navigate to the machine using a browser
-
-*NOTE*: Details on how to update the VM and additional information is included at the login screen (``~/.profile``)
+## Docker 
+Docker Image is still under development. Once released the link will be provided. 
