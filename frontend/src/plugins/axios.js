@@ -28,10 +28,17 @@ instance.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response.status === 401) {
+    if (error?.response?.status === 401) {
       store.dispatch("logout");
       router.push("/login");
     }
+
+    store.commit("addMessage", {
+      type: "error",
+      text: "An error occurred while making the request",
+      error,
+    });
+
     return Promise.reject(error);
   }
 );

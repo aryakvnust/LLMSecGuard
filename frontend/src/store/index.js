@@ -7,12 +7,19 @@ const store = new Vuex.Store({
     language: "cpp",
     footerActions: null,
     user: {},
+    messages: [],
   },
   mutations: {
     // Define your mutations here
     setUser(state, user) {
       state.user = user;
     },
+    addMessage(state, message) {
+      state.messages.push(message);
+    },
+    removeMessage(state) {
+      state.messages.shift();
+    }
   },
   actions: {
     // Define your actions here

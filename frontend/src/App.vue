@@ -2,11 +2,11 @@
   <v-theme-provider dark>
     <v-app>
       <v-app-bar density="compact" flat>
-        <span class="mx-4">LLM-Guard</span>
+        <span class="mx-4">LLM Sec Guard</span>
         <v-btn to="/code" exact>Editor</v-btn>
         <v-btn to="/code?prompt=true" exact>Prompt</v-btn>
         <v-btn to="/overview" exact>Overview</v-btn>
-        
+
         <v-spacer></v-spacer>
 
         <v-btn v-if="!user.id" to="/login">Login</v-btn>
@@ -38,14 +38,7 @@
             </v-list-item>
 
             <v-list-item>
-              <v-btn
-                color="red"
-                width="200px"
-                block
-                @click="$store.dispatch('logout')"
-              >
-                Logout
-              </v-btn>
+              <v-btn color="red" width="200px" block @click="$store.dispatch('logout')"> Logout </v-btn>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -55,19 +48,29 @@
         <RouterView></RouterView>
       </v-main>
 
+      <v-snackbar
+        :model-value="message !== null"
+        :color="message?.type || 'primary'"
+        multi-line
+        @update:modelValue="
+          (val) => {
+            if (!val) $store.commit('removeMessage');
+          }
+        "
+      >
+        {{ message?.text }}
+
+        <template v-slot:actions>
+          <v-btn color="primary" variant="flat" @click="() => $store.commit('removeMessage')"> Close </v-btn>
+        </template>
+      </v-snackbar>
+
       <v-footer app>
         <span class="mx-4">© 2021 LLM-Guard</span>
         <v-spacer></v-spacer>
 
         <div style="max-width: 200px">
-          <v-select
-            v-model="$store.state.language"
-            :items="languages"
-            variant="solo-filled"
-            density="compact"
-            flat
-            hide-details
-          ></v-select>
+          <v-select v-model="$store.state.language" :items="languages" variant="solo-filled" density="compact" flat hide-details></v-select>
         </div>
       </v-footer>
     </v-app>
@@ -89,6 +92,7 @@ export default defineComponent({
   }),
   computed: mapState({
     user: (state) => state.user || {},
+    message: (state) => state.messages[0] || null,
   }),
 });
 </script>
@@ -105,10 +109,7 @@ body .v-main {
 }
 
 .v-overlay .v-overlay__scrim {
-  background-color: rgba(
-    var(--v-theme-on-surface),
-    var(--v-overlay-opacity, 0.32)
-  );
+  background-color: rgba(var(--v-theme-on-surface), var(--v-overlay-opacity, 0.32));
   backdrop-filter: blur(10px);
   opacity: 1 !important;
 }
