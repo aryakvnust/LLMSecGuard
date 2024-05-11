@@ -19,6 +19,9 @@ const store = new Vuex.Store({
     },
     removeMessage(state) {
       state.messages.shift();
+    },
+    setObject(state, object) {
+      state.object = object || {};
     }
   },
   actions: {

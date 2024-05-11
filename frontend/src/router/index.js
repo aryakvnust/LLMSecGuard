@@ -15,6 +15,10 @@ const routes = [
     component: () => import("@/views/Overview.vue"),
   },
   {
+    path: "/overview/:object",
+    component: () => import("@/views/OverviewDetail.vue"),
+  },
+  {
     path: "/login",
     component: () => import("@/views/Login.vue"),
   },
