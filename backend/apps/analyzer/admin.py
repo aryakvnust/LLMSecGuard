@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.analyzer.models import Analyzer, Rule, Benchmark
+from apps.analyzer.models import Analyzer, Rule, Benchmark, MonthlySumCache
 
 # Register your models here.
 @admin.register(Analyzer)
@@ -23,3 +23,11 @@ class BenchmarkAdmin(admin.ModelAdmin):
     search_fields = ('branch', 'model')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
+    
+@admin.register(MonthlySumCache)
+class MonthlySumCacheAdmin(admin.ModelAdmin):
+    list_display = ('model', 'date', 'usage', 'errors')
+    list_filter = ('model', 'date')
+    readonly_fields = ('date', 'model', 'usage', 'errors')
+    search_fields = ('model', 'date')
+    ordering = ('-date',)

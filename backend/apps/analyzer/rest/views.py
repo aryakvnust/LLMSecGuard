@@ -6,6 +6,7 @@ from apps.analyzer.rest.serializers import AnalyzerSerializer, RuleSerializer, B
 from apps.analyzer.choices import BenchmarkTypeChoices
 from apps.analyzer.models import Analyzer, Rule, History, Benchmark
 from apps.dispatcher.models import LlmModel
+from apps.analyzer.helpers import analyze_code
 
 import requests
 import subprocess
@@ -20,66 +21,16 @@ class AnalyzerViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def analyze(self, request):
-        analyzers = Analyzer.objects.filter(is_public=True)
         model = LlmModel.objects.get(id=1)
+        lang = request.data.get('lang', 'cpp')
         
-        if request.user.is_authenticated:
-            analyzers = analyzers | Analyzer.objects.filter(user=request.user)
+        results = analyze_code(request.user, {
+            'lang': lang,
+            'code': request.data['code']
+        }, model.id)
         
         
-        results = []
-        saved = []
-        rules = {}
-        fix = None
-        
-        for analyzer in analyzers:
-            
-            for rule in analyzer.rule_set.all():
-                rules[rule.id] = rule
-                
-            result = requests.post(analyzer.url, json={
-                'lang': request.data['lang'],
-                'code': request.data['code'],
-                'rules': [{ 
-                    'id': rule.id,
-                    'rule': rule.rule
-                } for rule in rules.values()]
-            })
-                
-            for res in result.json()['results']:
-                line = res['line']
-                rule = res['rule']
-                
-                if (line, rule) in saved:
-                    continue
-                
-                saved.append((line, rule))
-                results.append({
-                    'code': res['code'],
-                    'line': res['line'],
-                    'rule': RuleSerializer(rules[res['rule']]).data
-                })
-                
-                History.objects.create(
-                    rule=rules[res['rule']],
-                    model=model
-                )
-
-        if len(results) > 0:
-            query = f"""
-                Fix these vulnerabilities in the following code:\n
-            """
-            
-            for res in results:
-                print("===== RES: ", res)
-                query += "- " + res['rule']['name'] + "(" + res['rule']['description'] + ") at line " + str(res['line']) + "\n"
-                
-            query += "\n\n    Only return the code, DONT'T include any other information,\n    such as a preamble or suffix.\n"
-            
-            fix = model.query(query)
-            fix = fix.strip()
-        
-        return Response({'results': results, 'fix': fix})
+        return Response(results)
     
     @action(detail=False)
     def start_built_in(self, request):

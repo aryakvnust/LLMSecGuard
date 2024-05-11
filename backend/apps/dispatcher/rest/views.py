@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from apps.dispatcher.rest.serializers import LlmModelSerializer
 from apps.dispatcher.models import LlmModel
+from apps.analyzer.helpers import analyze_code
 
 class LlmModelViewSet(ModelViewSet):
     queryset = LlmModel.objects.all()
@@ -13,8 +14,19 @@ class LlmModelViewSet(ModelViewSet):
     def query(self, request, pk=None):
         model = self.get_object()
         prompt = request.data['prompt']
+        analyze = request.data.get('analyze', True)
+        language = request.data.get('cpp', True)
         
-        return Response({'results': model.query(prompt)})
+        results = model.query(prompt)
+        analysis = {}
+        
+        if analyze:
+            analysis = analyze_code(request.user, {
+                'lang': 'cpp' if language else 'python',
+                'code': prompt
+            }, model.id)            
+        
+        return Response({'results': results, 'analysis': analysis})
     
     @action(detail=True, methods=['post'])
     def summerize(self, request, pk=None):
