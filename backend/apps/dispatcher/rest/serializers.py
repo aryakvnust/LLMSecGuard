@@ -6,3 +6,8 @@ class LlmModelSerializer(ModelSerializer):
         model = LlmModel
         fields = '__all__'
         
+class LlmModelListSerializer(ModelSerializer):
+    class Meta:
+        model = LlmModel
+        fields = ['id', 'name', 'created_at', 'updated_at']
+        

@@ -1,14 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.serializers import ValidationError
 
-from apps.analyzer.rest.serializers import AnalyzerSerializer, RuleSerializer, BenchmarkSerializer
+from apps.analyzer.rest.serializers import AnalyzerSerializer, RuleSerializer, BenchmarkSerializer, MonthlySumCacheSerializer
 from apps.analyzer.choices import BenchmarkTypeChoices
-from apps.analyzer.models import Analyzer, Rule, History, Benchmark
+from apps.analyzer.models import Analyzer, Rule, History, Benchmark, MonthlySumCache
 from apps.dispatcher.models import LlmModel
 from apps.analyzer.helpers import analyze_code
 
-import requests
 import subprocess
 from datetime import timedelta
 from django.db.models import Sum
@@ -141,3 +141,30 @@ class BenchmarkViewSet(ModelViewSet):
         )
         
         return Response(benchmarks)
+
+class MonthlySumCacheViewSet(ModelViewSet):
+    queryset = MonthlySumCache.objects.all()
+    serializer_class = MonthlySumCacheSerializer
+    
+    def get_queryset(self):
+        model = self.request.query_params.get('model')
+        query = super().get_queryset()
+        
+        if model is not None:
+            query = query.filter(model__id=model)
+            
+        return query
+    
+    @action(detail=False, methods=['get'])
+    def chart_data(self, request):
+        model = request.query_params.get('model')
+        
+        if model is None:
+            raise ValidationError({'model': 'This field is required'}, code=400)
+        
+        data = MonthlySumCache.objects.filter(model__id=model).values('date').annotate(
+            usage=Sum('usage'),
+            errors=Sum('errors')
+        )
+        
+        return Response(data)

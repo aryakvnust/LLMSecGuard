@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
-from apps.analyzer.models import Analyzer, Rule, Benchmark
+from apps.analyzer.models import Analyzer, Rule, Benchmark, MonthlySumCache
 from apps.analyzer.choices import BenchmarkTypeChoices
 from apps.vulnerabilities.rest.serializers import VulnerabilitySerializer
-from apps.dispatcher.rest.serializers import LlmModelSerializer
+from apps.dispatcher.rest.serializers import LlmModelSerializer, LlmModelListSerializer
 
 class AnalyzerSerializer(ModelSerializer):
     class Meta:
@@ -44,8 +44,21 @@ class BenchmarkSerializer(ModelSerializer):
             data['injection_unsuccessful_percentage'] = instance.metric5
             
         
-        
         data['objects'] = {
-            'model': LlmModelSerializer(instance.model).data
+            'model': LlmModelSerializer(instance.model).data,
+            'branch': BenchmarkTypeChoices(instance.branch).label
+        }
+        return data
+    
+class MonthlySumCacheSerializer(ModelSerializer):
+    class Meta:
+        model = MonthlySumCache
+        fields = '__all__'
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['objects'] = {
+            'model': LlmModelListSerializer(instance.model).data,
+            'rate': instance.usage / (instance.usage + instance.errors) if instance.usage + instance.errors > 0 else 0
         }
         return data
