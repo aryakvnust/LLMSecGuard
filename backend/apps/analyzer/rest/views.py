@@ -6,7 +6,7 @@ from rest_framework.serializers import ValidationError
 from apps.analyzer.rest.serializers import AnalyzerSerializer, RuleSerializer, BenchmarkSerializer, MonthlySumCacheSerializer
 from apps.analyzer.choices import BenchmarkTypeChoices
 from apps.analyzer.models import Analyzer, Rule, History, Benchmark, MonthlySumCache
-from apps.dispatcher.models import LlmModel
+from apps.prompt_agent.models import LlmModel
 from apps.analyzer.helpers import analyze_code
 
 import subprocess

@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from apps.analyzer.models import Analyzer, Rule, Benchmark, MonthlySumCache
 from apps.analyzer.choices import BenchmarkTypeChoices
 from apps.vulnerabilities.rest.serializers import VulnerabilitySerializer
-from apps.dispatcher.rest.serializers import LlmModelSerializer, LlmModelListSerializer
+from apps.prompt_agent.rest.serializers import LlmModelSerializer, LlmModelListSerializer
 
 class AnalyzerSerializer(ModelSerializer):
     class Meta:

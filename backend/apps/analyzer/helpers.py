@@ -1,6 +1,6 @@
 from apps.analyzer.models import Analyzer, History, MonthlySumCache
 from apps.analyzer.rest.serializers import RuleSerializer
-from apps.dispatcher.models import LlmModel
+from apps.prompt_agent.models import LlmModel
 
 import requests
 import datetime

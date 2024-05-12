@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from apps.analyzer.models import Benchmark
 from apps.analyzer.choices import BenchmarkTypeChoices
-from apps.dispatcher.models import LlmModel
+from apps.prompt_agent.models import LlmModel
 from json import loads
 
 class Command(BaseCommand):

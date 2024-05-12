@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     
-    'apps.dispatcher.apps.DispatcherConfig',
+    'apps.prompt_agent.apps.PromptAgentConfig',
     'apps.analyzer.apps.AnalyzerConfig',
     'apps.vulnerabilities.apps.VulnerabilitiesConfig',
     'apps.results.apps.ResultsConfig',

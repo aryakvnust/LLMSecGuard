@@ -42,7 +42,7 @@ class Rule(models.Model):
         return self.name
 
 class History(models.Model):
-    model = models.ForeignKey("dispatcher.LlmModel", on_delete=models.CASCADE)
+    model = models.ForeignKey("prompt_agent.LlmModel", on_delete=models.CASCADE)
     rule = models.ForeignKey("analyzer.Rule", on_delete=models.CASCADE)
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,7 +51,7 @@ class History(models.Model):
         return self.code
   
 class MonthlySumCache(models.Model):
-    model = models.ForeignKey("dispatcher.LlmModel", on_delete=models.CASCADE)
+    model = models.ForeignKey("prompt_agent.LlmModel", on_delete=models.CASCADE)
     date = models.CharField(max_length=7)
     usage = models.PositiveBigIntegerField(default=0)
     errors = models.PositiveBigIntegerField(default=0)
@@ -67,7 +67,7 @@ class MonthlySumCache(models.Model):
     
 class Benchmark(models.Model):
     branch = models.CharField(max_length=2, choices=BenchmarkTypeChoices.choices)
-    model = models.ForeignKey("dispatcher.LlmModel", on_delete=models.CASCADE)
+    model = models.ForeignKey("prompt_agent.LlmModel", on_delete=models.CASCADE)
     
     metric1 = models.FloatField()
     metric2 = models.FloatField()
