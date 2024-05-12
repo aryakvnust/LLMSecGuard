@@ -143,12 +143,12 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const { data: opts } = await axios.options("/dispatcher/models/");
+        const { data: opts } = await axios.options("/prompt-agent/models/");
         this.modelTypes = opts.actions.POST.model.choices.map(
           (el) => el.value
         );
 
-        const { data } = await axios.get("/dispatcher/models/", {
+        const { data } = await axios.get("/prompt-agent/models/", {
           params: {
             page: options.page,
             page_size: options.itemsPerPage,
@@ -164,7 +164,7 @@ export default defineComponent({
     async postSave() {
       this.posting = true;
       try {
-        const { data } = await axios.post(`/dispatcher/models/`, this.model);
+        const { data } = await axios.post(`/prompt-agent/models/`, this.model);
         this.model = data;
       } catch (err) {
         console.error(err);
@@ -175,7 +175,7 @@ export default defineComponent({
       this.posting = true;
       try {
         const { data } = await axios.patch(
-          `/dispatcher/models/${this.model.id}/`,
+          `/prompt-agent/models/${this.model.id}/`,
           this.model
         );
         this.model = new LlmModel();

@@ -228,7 +228,7 @@ export default {
     async postPrompt() {
       this.prompt.loading = true;
       try {
-        const { data } = await axios.post("/dispatcher/models/1/query/", {
+        const { data } = await axios.post("/prompt-agent/models/1/query/", {
           prompt: this.prompt.text,
         });
 
