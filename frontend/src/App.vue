@@ -66,7 +66,7 @@
       </v-snackbar>
 
       <v-footer app>
-        <span class="mx-4">© 2021 LLM-Guard</span>
+        <span class="mx-4">© {{ (new Date()).getFullYear() }} LLM Sec-Guard</span>
         <v-spacer></v-spacer>
 
         <div style="max-width: 200px">
