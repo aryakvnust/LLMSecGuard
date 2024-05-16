@@ -12,6 +12,7 @@ class LlmModel(models.Model):
     api_key = models.CharField(max_length=100, blank=True, null=True)
     
     summary = models.TextField(blank=True, null=True)
+    is_public = models.BooleanField(default=False)
 
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)    
     created_at = models.DateTimeField(auto_now_add=True)

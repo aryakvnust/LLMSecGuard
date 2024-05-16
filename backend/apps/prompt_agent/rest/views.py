@@ -5,10 +5,14 @@ from rest_framework.response import Response
 from apps.prompt_agent.rest.serializers import LlmModelSerializer
 from apps.prompt_agent.models import LlmModel
 from apps.security_agent.helpers import analyze_code
+from apps.prompt_agent.rest.permissions import IsPublicOrIsOwner
+
 
 class LlmModelViewSet(ModelViewSet):
     queryset = LlmModel.objects.all()
     serializer_class = LlmModelSerializer
+    permission_classes = [IsPublicOrIsOwner]
+    
     
     @action(detail=True, methods=['post'])
     def query(self, request, pk=None):
@@ -27,7 +31,7 @@ class LlmModelViewSet(ModelViewSet):
             }, model.id)            
         
         return Response({'results': results, 'analysis': analysis})
-    
+
     @action(detail=True, methods=['post'])
     def summerize(self, request, pk=None):
         model = self.get_object()
@@ -37,3 +41,5 @@ class LlmModelViewSet(ModelViewSet):
         prompt += "\n\n Your response should be markdown formatted: "
         
         return Response({'results': model.query(prompt)})
+
+

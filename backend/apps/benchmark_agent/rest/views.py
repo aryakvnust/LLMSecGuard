@@ -5,8 +5,10 @@ from rest_framework.serializers import ValidationError
 
 from apps.benchmark_agent.rest.serializers import BenchmarkSerializer, MonthlySumCacheSerializer
 from apps.benchmark_agent.choices import BenchmarkTypeChoices
-from apps.benchmark_agent.models import History, Benchmark, MonthlySumCache
+from apps.benchmark_agent.models import Benchmark, MonthlySumCache
 from apps.prompt_agent.models import LlmModel
+from apps.benchmark_agent.helpers import get_top_model
+from apps.prompt_agent.rest.serializers import LlmModelSerializer
 
 from datetime import timedelta
 from django.db.models import Sum
@@ -74,6 +76,19 @@ class BenchmarkViewSet(ModelViewSet):
         )
         
         return Response(benchmarks)
+
+    @action(detail=False, methods=['get'])
+    def get_top_model(self, request):
+        
+        model = None
+        
+        if request.user.is_authenticated:
+            model = get_top_model(request.user)
+        else:
+            model = get_top_model()
+        
+        serializer = LlmModelSerializer(model)
+        return Response(serializer.data)
 
 class MonthlySumCacheViewSet(ModelViewSet):
     queryset = MonthlySumCache.objects.all()

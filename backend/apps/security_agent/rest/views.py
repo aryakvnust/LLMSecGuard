@@ -1,17 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.serializers import ValidationError
 
 from apps.security_agent.rest.serializers import AnalyzerSerializer, RuleSerializer
 from apps.security_agent.models import Analyzer, Rule
-from apps.prompt_agent.models import LlmModel
 from apps.security_agent.helpers import analyze_code
 from apps.benchmark_agent.helpers import get_top_model
 
 import subprocess
-from datetime import timedelta
-from django.db.models import Sum
 
 BUILT_IN = None
 
@@ -21,8 +17,15 @@ class AnalyzerViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def analyze(self, request):
-        model = get_top_model()
+        
+        model = None
         lang = request.data.get('lang', 'cpp')
+        
+        if request.user.is_authenticated:
+            model = get_top_model(request.user)
+        else:
+            model = get_top_model()
+            
         
         results = analyze_code(request.user, {
             'lang': lang,
@@ -55,8 +58,13 @@ class AnalyzerViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def judge(self, request):
-        model = get_top_model()
+        model = None
         
+        if request.user.is_authenticated:
+            model = get_top_model(request.user)
+        else:
+            model = get_top_model()
+            
         query = f"""
             Act as a software programmer. 
             
