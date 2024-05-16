@@ -111,7 +111,7 @@ export default defineComponent({
     async getChart() {
       this.loading = true;
       try {
-        const { data } = await axios.get("/analyzer/monthly-sum-cache/chart_data/", {
+        const { data } = await axios.get("/benchmark-agent/monthly-sum-cache/chart_data/", {
           params: { model: this.data.objects.model.id },
         });
         this.options.xaxis.categories = data.map((d) => d.date);

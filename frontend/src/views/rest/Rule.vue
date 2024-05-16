@@ -172,7 +172,7 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const { data: opts } = await axios.options("/analyzer/rule/");
+        const { data: opts } = await axios.options("/security-agent/rule/");
         this.languageTypes = opts.actions.POST.language.choices.map((c) => ({
           title: c.display_name,
           value: c.value,
@@ -181,7 +181,7 @@ export default defineComponent({
         if(this.analyzers.length === 0) this.getAnalyzers(undefined);
         if(this.vulnerabilities.length === 0) this.getٰVulnerabilities(undefined);
 
-        const { data } = await axios.get("/analyzer/rule/", {
+        const { data } = await axios.get("/security-agent/rule/", {
           params: {
             page: options.page,
             page_size: options.itemsPerPage,
@@ -198,7 +198,7 @@ export default defineComponent({
       clearTimeout(this.analyzerTimer);
       this.analyzerTimer = setTimeout(async () => {
         try {
-          const { data } = await axios.get("/analyzer/analyzer/", {
+          const { data } = await axios.get("/security-agent/analyzer/", {
             params: {
               search: value,
               page_size: 200,

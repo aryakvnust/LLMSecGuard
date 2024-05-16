@@ -45,7 +45,7 @@ export default defineComponent({
     async getData() {
       this.loading = true;
       try {
-        const { data } = await axios.get("/analyzer/benchmark/overview/", {
+        const { data } = await axios.get("/benchmark-agent/benchmark/overview/", {
           isPublic: true,
         });
         this.overview = data;

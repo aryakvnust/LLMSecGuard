@@ -143,7 +143,7 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const { data } = await axios.get("/analyzer/analyzer/", {
+        const { data } = await axios.get("/security-agent/analyzer/", {
           params: {
             page: options.page,
             page_size: options.itemsPerPage,

@@ -2,41 +2,19 @@
   <v-container class="fill-height pa-0" fluid>
     <v-row class="fill-height">
       <v-col cols="6" class="py-2" style="background-color: #1e1e1e">
-        <MonacoEditor
-          :value="code"
-          language="cpp"
-          theme="vs-dark"
-          @change="edited"
-        />
+        <MonacoEditor :value="code" language="cpp" theme="vs-dark" @change="edited" />
       </v-col>
 
       <!-- Results -->
-      <v-col
-        cols="6"
-        class="px-4"
-        style="
-          position: relative;
-          overflow-y: scroll;
-          max-height: calc(100vh - 108px);
-        "
-      >
+      <v-col cols="6" class="px-4" style="position: relative; overflow-y: scroll; max-height: calc(100vh - 108px)">
         <v-card rounded="lg" class="mr-3 mb-4">
           <v-card-text>
-            <div
-              v-html="summary || `<span> Summary not available </span>`"
-            ></div>
+            <div v-html="summary || `<span> Summary not available </span>`"></div>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              prepend-icon="mdi-refresh"
-              color="primary"
-              :loading="analyzing"
-              @click="postAnalyze"
-            >
-              Analyze
-            </v-btn>
+            <v-btn prepend-icon="mdi-refresh" color="primary" :loading="analyzing" @click="postAnalyze"> Analyze </v-btn>
           </v-card-actions>
         </v-card>
 
@@ -48,11 +26,7 @@
         </v-card>
 
         <v-expansion-panels class="pr-4">
-          <v-expansion-panel
-            v-for="(result, i) in results"
-            :key="`result-${i}`"
-            rounded="lg"
-          >
+          <v-expansion-panel v-for="(result, i) in results" :key="`result-${i}`" rounded="lg">
             <v-expansion-panel-title>
               {{ result.rule.name }}
             </v-expansion-panel-title>
@@ -67,12 +41,7 @@
         </v-expansion-panels>
 
         <!-- Analyze Overlay -->
-        <v-overlay
-          :model-value="!analyzed"
-          class="align-center justify-center"
-          persistent
-          contained
-        >
+        <v-overlay :model-value="!analyzed" class="align-center justify-center" persistent contained>
           <v-container fluid style="width: 100%">
             <v-row>
               <v-col>
@@ -82,15 +51,7 @@
 
             <v-row>
               <v-col>
-                <v-btn
-                  variant="flat"
-                  color="primary"
-                  block
-                  :loading="analyzing"
-                  @click="postAnalyze"
-                >
-                  Analyze
-                </v-btn>
+                <v-btn variant="flat" color="primary" block :loading="analyzing" @click="postAnalyze"> Analyze </v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -109,22 +70,16 @@
       <v-card-actions class="px-4 py-2">
         <v-spacer></v-spacer>
         <v-btn color="red" @click="promptModal = false">Close</v-btn>
-        <v-btn
-          color="primary"
-          append-icon="mdi-send"
-          variant="flat"
-          :loading="prompt.loading"
-          @click="postPrompt"
-        >
-          Submit
-        </v-btn>
+        <p v-if="top_model.loading === true"> Finding top model ...</p>
+        <p v-else-if="top_model.model.id"> Using {{ top_model.model.name }}</p>
+        <v-btn color="primary" append-icon="mdi-send" variant="flat" :loading="prompt.loading" @click="postPrompt"> Submit </v-btn>
       </v-card-actions>
     </v-card>
 
     <!-- Response -->
     <v-card v-else rounded="lg">
       <v-card-text>
-        <pre v-text="prompt.response" style="text-wrap: balance;"></pre>
+        <pre v-text="prompt.response" style="text-wrap: balance"></pre>
       </v-card-text>
 
       <v-card-actions class="px-4 py-2">
@@ -172,6 +127,10 @@ export default {
     results: [],
     fixed: null,
     summary: null,
+    top_model: {
+      loading: false,
+      model: {},
+    },
     prompt: {
       loading: false,
       text: "",
@@ -199,7 +158,7 @@ export default {
     async postAnalyze() {
       this.analyzing = true;
       try {
-        const { data } = await axios.post("/analyzer/analyzer/analyze/", {
+        const { data } = await axios.post("/security-agent/analyzer/analyze/", {
           lang: this.$store.state.language,
           code: this.code,
         });
@@ -215,7 +174,7 @@ export default {
     },
     async postJudge() {
       try {
-        const { data } = await axios.post("/analyzer/analyzer/judge/", {
+        const { data } = await axios.post("/security-agent/analyzer/judge/", {
           code: this.code,
         });
 
@@ -228,7 +187,11 @@ export default {
     async postPrompt() {
       this.prompt.loading = true;
       try {
-        const { data } = await axios.post("/prompt-agent/models/1/query/", {
+        this.loading_top_model = true;
+        const { data: top_model } = await axios.get("/benchmark-agent/benchmark/");
+        this.top_model.loading = false;
+
+        const { data } = await axios.post(`/prompt-agent/models/${top_model.id}/query/`, {
           prompt: this.prompt.text,
         });
 
@@ -238,6 +201,7 @@ export default {
         console.error(error);
       }
       this.prompt.loading = false;
+      this.top_model.loading = false;
     },
   },
 };
