@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     
+    'apps.security_agent.apps.SecurityAgentConfig',
+    'apps.benchmark_agent.apps.BenchmarkAgentConfig',
     'apps.prompt_agent.apps.PromptAgentConfig',
-    'apps.analyzer.apps.AnalyzerConfig',
-    'apps.vulnerabilities.apps.VulnerabilitiesConfig',
     'apps.results.apps.ResultsConfig',
+    'apps.vulnerabilities.apps.VulnerabilitiesConfig',
 ]
 
 MIDDLEWARE = [

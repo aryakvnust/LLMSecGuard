@@ -1,5 +1,5 @@
-from apps.analyzer.models import Analyzer, History, MonthlySumCache
-from apps.analyzer.rest.serializers import RuleSerializer
+from apps.security_agent.models import Analyzer
+from apps.security_agent.rest.serializers import RuleSerializer
 from apps.prompt_agent.models import LlmModel
 
 import requests
@@ -72,7 +72,6 @@ def analyze_code(user, data, model_id):
 
     return {'results': results, 'fix': fix}
 
-def get_top_model():
     # Get the current month and year
     date = datetime.date.today().strftime('%Y-%m')
 

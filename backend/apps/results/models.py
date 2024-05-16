@@ -8,8 +8,8 @@ class Result(models.Model):
     benchmark = models.BooleanField(default=False)
     
     model = models.ForeignKey("prompt_agent.LlmModel", on_delete=models.CASCADE)
-    analyzer = models.ForeignKey("analyzer.Analyzer", on_delete=models.CASCADE)
-    rules = models.ManyToManyField("analyzer.Rule")
+    analyzer = models.ForeignKey("security_agent.Analyzer", on_delete=models.CASCADE)
+    rules = models.ManyToManyField("security_agent.Rule")
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     
     class Meta:

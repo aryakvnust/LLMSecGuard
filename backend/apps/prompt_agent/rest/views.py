@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from apps.prompt_agent.rest.serializers import LlmModelSerializer
 from apps.prompt_agent.models import LlmModel
-from apps.analyzer.helpers import analyze_code
+from apps.security_agent.helpers import analyze_code
 
 class LlmModelViewSet(ModelViewSet):
     queryset = LlmModel.objects.all()
