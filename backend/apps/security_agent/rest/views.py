@@ -5,9 +5,9 @@ from rest_framework.serializers import ValidationError
 
 from apps.security_agent.rest.serializers import AnalyzerSerializer, RuleSerializer
 from apps.security_agent.models import Analyzer, Rule
-from apps.benchmark_agent.models import History, Benchmark, MonthlySumCache
 from apps.prompt_agent.models import LlmModel
 from apps.security_agent.helpers import analyze_code
+from apps.benchmark_agent.helpers import get_top_model
 
 import subprocess
 from datetime import timedelta
@@ -21,7 +21,7 @@ class AnalyzerViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def analyze(self, request):
-        model = LlmModel.objects.get(id=1)
+        model = get_top_model()
         lang = request.data.get('lang', 'cpp')
         
         results = analyze_code(request.user, {
@@ -55,7 +55,7 @@ class AnalyzerViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def judge(self, request):
-        model = LlmModel.objects.get(id=1)
+        model = get_top_model()
         
         query = f"""
             Act as a software programmer. 

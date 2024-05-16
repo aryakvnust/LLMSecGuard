@@ -4,7 +4,7 @@ from apps.prompt_agent.models import LlmModel
 import requests
 import datetime
 
-def get_top_model():
+def get_top_model() -> LlmModel:
     # Get the current month and year
     date = datetime.date.today().strftime('%Y-%m')
 
