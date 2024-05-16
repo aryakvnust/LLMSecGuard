@@ -15,20 +15,25 @@ This component has a pivotal role to uncover security issues in LLM-generated co
 Precisely, it is entrusted to pass code to static code analysis engines (such as Semgrep and Weggli), and to collect potential security vulnerabilities.
 
 The analyzer agent consists of two parts: 
-1. Analyzer client: The client is located at `backend/apps/analyzer`. Its job is to create requests to a selected analyzer service and record the data. It also keeps track of the amount of code produced and the count of security concern detected in the code. 
-2. Analyzer service: The service is a basic HTTP server that is located at `backend/service/analyzer/service.py`. The built-in server is implemented via using [weggli](https://github.com/weggli-rs/weggli) and regex rules. It is possible to implement a custom analyzer as long as it supports the interface provided in the README file located at `backend/apps/analyzer/README.md`.
+
+Analyzer client: The client is located at `backend/apps/security_agent`. Its job is to create requests to a selected analyzer service and record the data. It also keeps track of the amount of code produced and the count of security concern detected in the code. 
+
+**Analysis Engine**
+
+Analyzer service: The service is a basic HTTP server that is located at `backend/service/analyzer/service.py`. The built-in server is implemented via using [weggli](https://github.com/weggli-rs/weggli) and regex rules. It is possible to implement a custom analyzer as long as it supports the interface provided in the README file located at `backend/apps/security_agent/README.md`.
 
 **Benchmark Agent:**
 This component is responsible to benchmark the security properties of LLMs on a periodic basis.
 It processes the benchmark prompts, provided in JSON format, and iteratively sends each prompt  to ``Prompt Agent''.
 In the end, it measures the security properties of LLMs (e.g., measures code security based on the number of CWEs and their severity) and ranks LLMs respectively. It records this information in the database. 
 
-The benchmark agent is implemented in the analyzer app located at `backend/apps/analyzer`. Since benchmarking the LLMs is done via analyzing its capabilities to produce safe code, the benchmarking mechanism is implemented alongside insecure code detection. 
+The benchmark agent is implemented in the analyzer app located at `backend/apps/benchmark_agent`. Since benchmarking the LLMs is done via analyzing its capabilities to produce safe code, the benchmarking mechanism is implemented alongside insecure code detection. 
 
 
 # Environment
 
 **Running LLMSecGuard **
+0. Create a Virtual Env by using you tool of choice. (eg: `virtualenv venv`)
 
 1. Activate Python Env:
   - Windows: ``.\venv\Script\activate``
@@ -57,7 +62,7 @@ The benchmark agent is implemented in the analyzer app located at `backend/apps/
 1. Create a superuser by running ``python manage.py createsuperuser``
 2. Run the backend by executing ``python manage.py runserver 0.0.0.0:8000``
 3. Add API key of a supported LLM in ``/admin/`` under **Prompt Dispatcher > LLMModels**
-4. Run add/run the analyzer server by navigating to ``http://localhost:8000/analyzers/analyzer``
+4. Run add/run the analyzer server by navigating to ``http://localhost:8000/security_agent/analyzer``
 5. Install front-end dependencies by first navigating into the front-end directory ``cd frontend`` and then running ``npm i``
 6. Run the frontend development server by running ``npm run serve``
 7. Navigate to main page of the tool (``http://localhost:3000`` or the url provided by VueCLI)
