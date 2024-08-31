@@ -22,7 +22,7 @@
 
     <v-row>
       <v-col>
-        <v-data-table
+        <v-data-table-server
           :headers="headers"
           :items="rules"
           :items-length="count"
@@ -30,11 +30,9 @@
           @click:row="(event, { item }) => (rule = item)"
         >
           <template v-slot:item.language="{ item }">
-            {{
-              languageTypes.find((c) => c.value == item.language)?.title || "-"
-            }}
+            {{ languageTypes.find((c) => c.value == item.language)?.title || "-" }}
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-col>
     </v-row>
   </v-container>
@@ -148,6 +146,7 @@ export default defineComponent({
     loading: false,
     posting: false,
     count: 0,
+
     Rule,
     rules: [],
     rule: new Rule(),
@@ -168,7 +167,7 @@ export default defineComponent({
     this.getRules();
   },
   methods: {
-    async getRules(options = { page: 1, itemsPerPage: 20 }) {
+    async getRules(options = { page: 1, itemsPerPage: 10 }) {
       this.loading = true;
 
       try {

@@ -3,7 +3,7 @@ import store from "@/store";
 import router from "@/router";
 
 const options = {
-  baseURL: process.env.VUE_APP_API_URL || "http://localhost:8000/api",
+  baseURL: import.meta.env.VITE_APP_API_URL || "http://localhost:8000/api",
 };
 
 const instance = axios.create(options);

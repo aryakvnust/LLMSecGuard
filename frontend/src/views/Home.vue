@@ -2,19 +2,19 @@
   <v-container class="fill-height pa-0" fluid>
     <v-row class="fill-height">
       <v-col cols="6" class="py-2" style="background-color: #1e1e1e">
-        <MonacoEditor :value="code" language="cpp" theme="vs-dark" @change="edited" />
+        <MonacoEditor :value="code" language="cpp" theme="vs-dark" @change="edited"/>
       </v-col>
 
       <!-- Results -->
       <v-col cols="6" class="px-4" style="position: relative; overflow-y: scroll; max-height: calc(100vh - 108px)">
         <v-card rounded="lg" class="mr-3 mb-4">
           <v-card-text>
-            <div v-html="summary || `<span> Summary not available </span>`"></div>
+            <div v-html="summary || `<span> Summary not available </span>`" class="pa-4"></div>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn prepend-icon="mdi-refresh" color="primary" :loading="analyzing" @click="postAnalyze"> Analyze </v-btn>
+            <v-btn prepend-icon="mdi-refresh" color="primary" :loading="analyzing" @click="postAnalyze"> Analyze</v-btn>
           </v-card-actions>
         </v-card>
 
@@ -51,7 +51,7 @@
 
             <v-row>
               <v-col>
-                <v-btn variant="flat" color="primary" block :loading="analyzing" @click="postAnalyze"> Analyze </v-btn>
+                <v-btn variant="flat" color="primary" block :loading="analyzing" @click="postAnalyze"> Analyze</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -67,12 +67,21 @@
         <v-textarea v-model="prompt.text" label="Prompt ..."></v-textarea>
       </v-card-text>
 
-      <v-card-actions class="px-4 py-2">
+      <v-card-actions class="px-6 py-2">
+        <LlmPicker/>
         <v-spacer></v-spacer>
         <v-btn color="red" @click="promptModal = false">Close</v-btn>
         <p v-if="top_model.loading === true"> Finding top model ...</p>
         <p v-else-if="top_model.model.id"> Using {{ top_model.model.name }}</p>
-        <v-btn color="primary" append-icon="mdi-send" variant="flat" :loading="prompt.loading" @click="postPrompt"> Submit </v-btn>
+        <v-btn
+            color="primary"
+            append-icon="mdi-send"
+            variant="flat"
+            :loading="prompt.loading"
+            @click="postPrompt"
+        >
+          Submit
+        </v-btn>
       </v-card-actions>
     </v-card>
 
@@ -86,10 +95,10 @@
         <v-spacer></v-spacer>
         <v-btn color="red" @click="prompt.response = ''">Discard</v-btn>
         <v-btn
-          color="primary"
-          append-icon="mdi-check"
-          variant="flat"
-          @click="
+            color="primary"
+            append-icon="mdi-check"
+            variant="flat"
+            @click="
             () => {
               code = prompt.response;
               promptModal = false;
@@ -108,9 +117,11 @@
 import MonacoEditor from "monaco-editor-vue3";
 import axios from "@/plugins/axios";
 import MarkdownIt from "markdown-it";
+import LlmPicker from "@/components/LlmPicker.vue";
 
 export default {
   components: {
+    LlmPicker,
     MonacoEditor,
   },
   data: () => ({
@@ -146,7 +157,7 @@ export default {
         return this.$route.query.prompt === "true";
       },
       set(val) {
-        this.$router.push({ query: { prompt: val ? "true" : undefined } });
+        this.$router.push({query: {prompt: val ? "true" : undefined}});
       },
     },
   },
@@ -158,7 +169,7 @@ export default {
     async postAnalyze() {
       this.analyzing = true;
       try {
-        const { data } = await axios.post("/security-agent/analyzer/analyze/", {
+        const {data} = await axios.post("/security-agent/analyzer/analyze/", {
           lang: this.$store.state.language,
           code: this.code,
         });
@@ -174,7 +185,7 @@ export default {
     },
     async postJudge() {
       try {
-        const { data } = await axios.post("/security-agent/analyzer/judge/", {
+        const {data} = await axios.post("/security-agent/analyzer/judge/", {
           code: this.code,
         });
 
@@ -187,11 +198,9 @@ export default {
     async postPrompt() {
       this.prompt.loading = true;
       try {
-        this.loading_top_model = true;
-        const { data: top_model } = await axios.get("/benchmark-agent/benchmark/");
-        this.top_model.loading = false;
+        const id = this.$store.state.model;
 
-        const { data } = await axios.post(`/prompt-agent/models/${top_model.id}/query/`, {
+        const {data} = await axios.post(`/prompt-agent/models/${id}/query/`, {
           prompt: this.prompt.text,
         });
 

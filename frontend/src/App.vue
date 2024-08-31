@@ -25,20 +25,20 @@
             <v-divider></v-divider>
 
             <v-list-item to="/models" exact>
-              <v-list-item-title> Models </v-list-item-title>
+              <v-list-item-title> Models</v-list-item-title>
             </v-list-item>
             <v-list-item to="/analyzers" exact>
-              <v-list-item-title> Analyzers </v-list-item-title>
+              <v-list-item-title> Analyzers</v-list-item-title>
             </v-list-item>
             <v-list-item to="/vulnerability" exact>
-              <v-list-item-title> Vulnerabilities </v-list-item-title>
+              <v-list-item-title> Vulnerabilities</v-list-item-title>
             </v-list-item>
             <v-list-item to="/rule" exact>
-              <v-list-item-title> Rules </v-list-item-title>
+              <v-list-item-title> Rules</v-list-item-title>
             </v-list-item>
 
             <v-list-item>
-              <v-btn color="red" width="200px" block @click="$store.dispatch('logout')"> Logout </v-btn>
+              <v-btn color="red" width="200px" block @click="$store.dispatch('logout')"> Logout</v-btn>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -48,11 +48,12 @@
         <RouterView></RouterView>
       </v-main>
 
+      <!-- Messages -->
       <v-snackbar
-        :model-value="message !== null"
-        :color="message?.type || 'primary'"
-        multi-line
-        @update:modelValue="
+          :model-value="message !== null"
+          :color="message?.type || 'primary'"
+          multi-line
+          @update:modelValue="
           (val) => {
             if (!val) $store.commit('removeMessage');
           }
@@ -61,16 +62,26 @@
         {{ message?.text }}
 
         <template v-slot:actions>
-          <v-btn color="primary" variant="flat" @click="() => $store.commit('removeMessage')"> Close </v-btn>
+          <v-btn color="primary" variant="flat" @click="() => $store.commit('removeMessage')"> Close</v-btn>
         </template>
       </v-snackbar>
 
+      <!-- Footer -->
       <v-footer app>
         <span class="mx-4">© {{ (new Date()).getFullYear() }} LLM Sec-Guard</span>
         <v-spacer></v-spacer>
 
         <div style="max-width: 200px">
-          <v-select v-model="$store.state.language" :items="languages" variant="solo-filled" density="compact" flat hide-details></v-select>
+          <v-select
+              v-model="$store.state.language"
+              :items="languages"
+              variant="solo-filled"
+              density="compact"
+              flat
+              hide-details
+          >
+
+          </v-select>
         </div>
       </v-footer>
     </v-app>
@@ -78,22 +89,33 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-import { mapState } from "vuex";
+import {defineComponent} from "vue";
+import {mapState} from "vuex";
+import LlmPicker from "@/components/LlmPicker.vue";
 
 export default defineComponent({
+  components: {LlmPicker},
   data: () => ({
     languages: [
-      { title: "C++", value: "cpp" },
-      { title: "Python", value: "python" },
-      { title: "Java", value: "java" },
-      { title: "JavaScript", value: "javascript" },
+      {title: "C", value: "c"},
+      {title: "C++", value: "cpp"},
+      {title: "Python", value: "python"},
+      {title: "Java", value: "java"},
+      {title: "JavaScript", value: "javascript"},
     ],
   }),
   computed: mapState({
     user: (state) => state.user || {},
     message: (state) => state.messages[0] || null,
   }),
+  mounted() {
+    const token = window.localStorage.getItem("LLMAccess");
+    if (token) {
+      this.$store.dispatch("getUser").then().catch(console.error);
+    }
+
+    this.$store.dispatch("getLlmModels").then().catch(console.error);
+  }
 });
 </script>
 

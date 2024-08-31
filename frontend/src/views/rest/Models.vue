@@ -6,14 +6,16 @@
           <v-toolbar-title>Models</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            @click="
+              color="primary"
+              @click="
               () => {
                 model = new LlmModel();
                 model.id = undefined;
               }
             "
-            >Create Model</v-btn
+          >
+            Create Model
+          </v-btn
           >
         </v-toolbar>
       </v-col>
@@ -21,22 +23,22 @@
 
     <v-row>
       <v-col>
-        <v-data-table
-          :headers="headers"
-          :items="models"
-          :items-length="count"
-          @update:options="getModels"
-          @click:row="(event, { item }) => (model = item)"
+        <v-data-table-server
+            :headers="headers"
+            :items="models"
+            :items-length="count"
+            @update:options="getModels"
+            @click:row="(event, { item }) => (model = item)"
         >
-        </v-data-table>
+        </v-data-table-server>
       </v-col>
     </v-row>
   </v-container>
 
   <v-dialog
-    :model-value="model.id !== null"
-    max-width="700px"
-    @update:modelValue="
+      :model-value="model.id !== null"
+      max-width="700px"
+      @update:modelValue="
       (val) => {
         if (!val) model = new LlmModel();
       }
@@ -47,34 +49,34 @@
       <v-card-text>
         <v-form>
           <v-text-field
-            v-model="model.name"
-            label="Name"
-            class="mb-4"
+              v-model="model.name"
+              label="Name"
+              class="mb-4"
           ></v-text-field>
 
           <v-textarea
-            v-model="model.description"
-            label="Description"
-            class="mb-4"
+              v-model="model.description"
+              label="Description"
+              class="mb-4"
           ></v-textarea>
 
           <v-select
-            v-model="model.model"
-            :items="modelTypes"
-            label="Model"
-            class="mb-4"
+              v-model="model.model"
+              :items="modelTypes"
+              label="Model"
+              class="mb-4"
           ></v-select>
 
           <v-text-field
-            v-model="model.api_key"
-            label="API Key"
-            class="mb-4"
+              v-model="model.api_key"
+              label="API Key"
+              class="mb-4"
           ></v-text-field>
 
           <v-textarea
-            v-model="model.summary"
-            label="Summary"
-            class="mb-4"
+              v-model="model.summary"
+              label="Summary"
+              class="mb-4"
           ></v-textarea>
         </v-form>
       </v-card-text>
@@ -84,22 +86,22 @@
 
         <v-btn color="red" @click="model = new LlmModel()">Cancel</v-btn>
         <v-btn
-          v-if="model.id === undefined"
-          color="primary"
-          variant="flat"
-          append-icon="mdi-content-save-check"
-          :loading="posting"
-          @click="postSave"
+            v-if="model.id === undefined"
+            color="primary"
+            variant="flat"
+            append-icon="mdi-content-save-check"
+            :loading="posting"
+            @click="postSave"
         >
           Save
         </v-btn>
         <v-btn
-          v-else-if="model.id"
-          color="primary"
-          variant="flat"
-          append-icon="mdi-content-save-check"
-          :loading="posting"
-          @click="patchSave"
+            v-else-if="model.id"
+            color="primary"
+            variant="flat"
+            append-icon="mdi-content-save-check"
+            :loading="posting"
+            @click="patchSave"
         >
           Update
         </v-btn>
@@ -110,7 +112,7 @@
 
 <script>
 import axios from "@/plugins/axios";
-import { defineComponent } from "vue";
+import {defineComponent} from "vue";
 
 class LlmModel {
   id = null;
@@ -131,24 +133,24 @@ export default defineComponent({
     model: new LlmModel(),
     modelTypes: [],
     headers: [
-      { title: "Name", value: "name" },
-      { title: "Model", value: "model" },
+      {title: "Name", value: "name"},
+      {title: "Model", value: "model"},
     ],
   }),
   mounted() {
     this.getModels();
   },
   methods: {
-    async getModels(options = { page: 1, itemsPerPage: 20 }) {
+    async getModels(options = {page: 1, itemsPerPage: 10}) {
       this.loading = true;
 
       try {
-        const { data: opts } = await axios.options("/prompt-agent/models/");
+        const {data: opts} = await axios.options("/prompt-agent/models/");
         this.modelTypes = opts.actions.POST.model.choices.map(
-          (el) => el.value
+            (el) => el.value
         );
 
-        const { data } = await axios.get("/prompt-agent/models/", {
+        const {data} = await axios.get("/prompt-agent/models/", {
           params: {
             page: options.page,
             page_size: options.itemsPerPage,
@@ -164,7 +166,7 @@ export default defineComponent({
     async postSave() {
       this.posting = true;
       try {
-        const { data } = await axios.post(`/prompt-agent/models/`, this.model);
+        const {data} = await axios.post(`/prompt-agent/models/`, this.model);
         this.model = data;
       } catch (err) {
         console.error(err);
@@ -174,9 +176,9 @@ export default defineComponent({
     async patchSave() {
       this.posting = true;
       try {
-        const { data } = await axios.patch(
-          `/prompt-agent/models/${this.model.id}/`,
-          this.model
+        const {data} = await axios.patch(
+            `/prompt-agent/models/${this.model.id}/`,
+            this.model
         );
         this.model = new LlmModel();
       } catch (err) {

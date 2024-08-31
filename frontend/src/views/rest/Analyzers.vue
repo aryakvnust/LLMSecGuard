@@ -22,14 +22,14 @@
 
     <v-row>
       <v-col>
-        <v-data-table
+        <v-data-table-server
           :headers="headers"
           :items="analyzers"
           :items-length="count"
           @update:options="getAnalyzers"
           @click:row="(event, { item }) => (analyzer = item)"
         >
-        </v-data-table>
+        </v-data-table-server>
       </v-col>
     </v-row>
   </v-container>
@@ -139,7 +139,7 @@ export default defineComponent({
     this.getAnalyzers();
   },
   methods: {
-    async getAnalyzers(options = { page: 1, itemsPerPage: 20 }) {
+    async getAnalyzers(options = { page: 1, itemsPerPage: 10 }) {
       this.loading = true;
 
       try {
