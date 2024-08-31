@@ -10,9 +10,13 @@ colorama==0.4.6
 dataclasses-json==0.6.3
 distro==1.9.0
 Django==5.0.1
+django-cors-headers==4.3.1
+django-extensions==3.2.3
 djangorestframework==3.14.0
 django-rest-swagger==2.2.0
 djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
+Flask==3.0.2
 frozenlist==1.4.1
 greenlet==3.0.3
 h11==0.14.0
