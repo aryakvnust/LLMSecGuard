@@ -15,6 +15,7 @@ django-extensions==3.2.3
 djangorestframework==3.14.0
 django-rest-swagger==2.2.0
 djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
 frozenlist==1.4.1
 greenlet==3.0.3
 h11==0.14.0
