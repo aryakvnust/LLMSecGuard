@@ -52,9 +52,7 @@ def analyze_code(user, data, model_id):
             )
 
     if len(results) > 0:
-        query = f"""
-            Fix these vulnerabilities in the following code:\n
-        """
+        query = "Fix these vulnerabilities in the following code:\n"
 
         for res in results:
             print("===== RES: ", res)

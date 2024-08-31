@@ -5,16 +5,17 @@
 
 from __future__ import annotations
 
+import json
 import logging
 
 import time
 from abc import ABC, abstractmethod
 
 import openai
+import requests
 from langchain.llms import Together
 
 from typing_extensions import override
-
 
 NUM_LLM_RETRIES = 10
 
@@ -46,7 +47,7 @@ class LLM(ABC):
         pass
 
     def query_with_retries(
-        self, prompt: str, retries: int = NUM_LLM_RETRIES, backoff_factor: float = 0.5
+            self, prompt: str, retries: int = NUM_LLM_RETRIES, backoff_factor: float = 0.5
     ) -> str:
         """
         Wrapper around query that retries the query if it fails.
@@ -58,7 +59,7 @@ class LLM(ABC):
                 return self.query(prompt)
             except Exception as exception:
                 last_exception = exception
-                sleep_time = backoff_factor * (2**retry)
+                sleep_time = backoff_factor * (2 ** retry)
                 time.sleep(sleep_time)
                 LOG.warning(
                     f"LLM Query failed with error: {exception}. Sleeping for {sleep_time} seconds..."
@@ -95,8 +96,11 @@ def create(identifier: str) -> LLM:
         return ANYSCALE(name, api_key)
     if provider == "TOGETHER":
         return TOGETHER(name, api_key)
+    if provider == "OPENROUTER":
+        return OPENROUTER(name, api_key)
 
     raise ValueError(f"Unknown provider: {provider}")
+
 
 class OPENAI(LLM):
     """Accessing OPENAI"""
@@ -125,6 +129,7 @@ class OPENAI(LLM):
     @override
     def valid_models(self) -> list[str]:
         return ["gpt-3.5-turbo", "gpt-4"]
+
 
 class ANYSCALE(LLM):
     """Accessing ANYSCALE"""
@@ -157,6 +162,7 @@ class ANYSCALE(LLM):
             "mistralai/Mistral-7B-Instruct-v0.1",
             "HuggingFaceH4/zephyr-7b-beta",
         ]
+
 
 class TOGETHER(LLM):
     """Accessing TOGETHER"""
@@ -191,4 +197,52 @@ class TOGETHER(LLM):
             "togethercomputer/llama-2-13b-chat",
             "togethercomputer/llama-2-70b",
             "togethercomputer/llama-2-70b-chat",
+        ]
+
+
+class OPENROUTER(LLM):
+    """Accessing OPENROUTER"""
+
+    @override
+    def query(self, prompt: str) -> str:
+        response = requests.post(
+            url="https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+            },
+            data=json.dumps({
+                "model": self.model,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            })
+        )
+
+        message = response.json()["choices"][0]["message"]
+        return message['content']
+
+    @override
+    def valid_models(self) -> list[str]:
+        return [
+            "nousresearch/hermes-3-llama-3.1-405b",
+            "nousresearch/hermes-3-llama-3.1-405b:extended",
+            "meta-llama/llama-3.1-8b-instruct:free",
+            "qwen/qwen-2-7b-instruct:free",
+            "google/gemma-2-9b-it:free",
+            "mistralai/mistral-7b-instruct:free",
+            "microsoft/phi-3-mini-128k-instruct:free",
+            "microsoft/phi-3-medium-128k-instruct:free",
+            "meta-llama/llama-3-8b-instruct:free",
+            "google/gemma-7b-it:free",
+            "recursal/eagle-7b",
+            "recursal/rwkv-5-3b-ai-town",
+            "rwkv/rwkv-5-world-3b",
+            "gryphe/mythomist-7b:free",
+            "nousresearch/nous-capybara-7b:free",
+            "openchat/openchat-7b:free",
+            "undi95/toppy-m-7b:free",
+            "huggingfaceh4/zephyr-7b-beta:free"
         ]

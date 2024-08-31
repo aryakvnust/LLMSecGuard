@@ -32,5 +32,24 @@ LlmTypes = [
     "TOGETHER::togethercomputer/llama-2-13b-chat",
     "TOGETHER::togethercomputer/llama-2-70b",
     "TOGETHER::togethercomputer/llama-2-70b-chat",
+
+    "OPENROUTER::nousresearch/hermes-3-llama-3.1-405b",
+    "OPENROUTER::nousresearch/hermes-3-llama-3.1-405b:extended",
+    "OPENROUTER::meta-llama/llama-3.1-8b-instruct:free",
+    "OPENROUTER::qwen/qwen-2-7b-instruct:free",
+    "OPENROUTER::google/gemma-2-9b-it:free",
+    "OPENROUTER::mistralai/mistral-7b-instruct:free",
+    "OPENROUTER::microsoft/phi-3-mini-128k-instruct:free",
+    "OPENROUTER::microsoft/phi-3-medium-128k-instruct:free",
+    "OPENROUTER::meta-llama/llama-3-8b-instruct:free",
+    "OPENROUTER::google/gemma-7b-it:free",
+    "OPENROUTER::recursal/eagle-7b",
+    "OPENROUTER::recursal/rwkv-5-3b-ai-town",
+    "OPENROUTER::rwkv/rwkv-5-world-3b",
+    "OPENROUTER::gryphe/mythomist-7b:free",
+    "OPENROUTER::nousresearch/nous-capybara-7b:free",
+    "OPENROUTER::openchat/openchat-7b:free",
+    "OPENROUTER::undi95/toppy-m-7b:free",
+    "OPENROUTER::huggingfaceh4/zephyr-7b-beta:free"
 ]
     

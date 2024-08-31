@@ -27,16 +27,16 @@ class AnalyzerViewSet(ModelViewSet):
         else:
             model = get_top_model()
 
-        # results = analyze_code(request.user, {
-        #     'lang': lang,
-        #     'code': request.data['code']
-        # }, model.id)
+        results = analyze_code(request.user, {
+            'lang': lang,
+            'code': request.data['code']
+        }, model.id)
 
         # DEMO
-        import json
-        from time import sleep
-        results = json.loads(open("C:\\Users\\Arya\\Projects\\LLMSecGuard\\demo\\analyze.json").read())
-        sleep(2)
+        # import json
+        # from time import sleep
+        # results = json.loads(open("C:\\Users\\Arya\\Projects\\LLMSecGuard\\demo\\analyze.json").read())
+        # sleep(2)
 
         return Response(results)
 
@@ -78,12 +78,12 @@ class AnalyzerViewSet(ModelViewSet):
                 f"{request.data['code']}\n" \
                 f"```"
 
-        # description = model.query(query)
+        description = model.query(query)
 
         # DEMO
-        from time import sleep
-        description = open("C:\\Users\\Arya\\Projects\\LLMSecGuard\\demo\\description.md").read()
-        sleep(2)
+        # from time import sleep
+        # description = open("C:\\Users\\Arya\\Projects\\LLMSecGuard\\demo\\description.md").read()
+        # sleep(2)
 
         return Response({'description': description})
 
@@ -91,3 +91,4 @@ class AnalyzerViewSet(ModelViewSet):
 class RuleViewSet(ModelViewSet):
     queryset = Rule.objects.all()
     serializer_class = RuleSerializer
+
