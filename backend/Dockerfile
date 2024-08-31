@@ -4,6 +4,13 @@ FROM python:3.11-slim-bullseye
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Install rust and weggli
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+ENV CARGO_TARGET_DIR=/tmp
+RUN rustup update
+RUN cargo install weggli
+
 # Set the working directory
 WORKDIR /app
 
