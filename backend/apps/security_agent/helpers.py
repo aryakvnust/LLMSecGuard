@@ -19,7 +19,6 @@ def analyze_code(user, data, model_id):
     fix = None
 
     for analyzer in analyzers:
-
         for rule in analyzer.rule_set.all():
             rules[rule.id] = rule
 
