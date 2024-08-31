@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,9 +26,13 @@ SECRET_KEY = 'django-insecure-%b+ku1$m=8bn48)v%b*7n6v=vjzaw30zm4*mu-$)6_=m0r4%!%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "3f47-151-244-181-79.ngrok-free.app", "22a6-151-244-180-109.ngrok-free.app"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://3f47-151-244-181-79.ngrok-free.app",
+    "https://3f47-151-244-181-79.ngrok-free.app",
+    "http://22a6-151-244-180-109.ngrok-free.app",
+    "https://22a6-151-244-180-109.ngrok-free.app",
 ]
 
 
@@ -42,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_extensions',
+    'drf_yasg',
     
     'apps.security_agent.apps.SecurityAgentConfig',
     'apps.benchmark_agent.apps.BenchmarkAgentConfig',
@@ -76,7 +83,7 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,6 +145,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

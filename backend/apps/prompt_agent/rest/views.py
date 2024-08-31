@@ -11,7 +11,8 @@ from apps.prompt_agent.rest.permissions import IsPublicOrIsOwner
 class LlmModelViewSet(ModelViewSet):
     queryset = LlmModel.objects.all()
     serializer_class = LlmModelSerializer
-    permission_classes = [IsPublicOrIsOwner]
+    # permission_classes = [IsPublicOrIsOwner]
+    permission_classes = []
     
     
     @action(detail=True, methods=['post'])
@@ -21,14 +22,20 @@ class LlmModelViewSet(ModelViewSet):
         analyze = request.data.get('analyze', True)
         language = request.data.get('cpp', True)
         
-        results = model.query(prompt)
+        # results = model.query(prompt)
+        
+        # DEMO
+        from time import sleep
+        results = open("C:\\Users\\Arya\\Projects\\LLMSecGuard\\demo\\code.cpp").read()
+        sleep(2)
+        
         analysis = {}
         
-        if analyze:
-            analysis = analyze_code(request.user, {
-                'lang': 'cpp' if language else 'python',
-                'code': prompt
-            }, model.id)            
+        # if analyze:
+        #     analysis = analyze_code(request.user, {
+        #         'lang': 'cpp' if language else 'python',
+        #         'code': prompt
+        #     }, model.id)            
         
         return Response({'results': results, 'analysis': analysis})
 

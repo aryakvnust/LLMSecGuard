@@ -59,6 +59,8 @@ def analyze_code(user, data, model_id):
         for res in results:
             print("===== RES: ", res)
             query += "- " + res['rule']['name'] + "(" + res['rule']['description'] + ") at line " + str(res['line']) + "\n"
+            
+        query += f"""\n\ncode:\n```{data['lang']}\n{data['code']}\n```\n\n"""
 
         query += "\n\n    Only return the code, DONT'T include any other information,\n    such as a preamble or suffix.\n"
 

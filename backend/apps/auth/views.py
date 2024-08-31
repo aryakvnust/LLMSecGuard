@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from django.contrib.auth.models import User
 from apps.auth.serializers import UserSerializer, UserSignupSerializer
 
+
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -19,9 +20,10 @@ class UserViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def search(self, request):
         query = request.query_params.get('query', '')
-        users = User.objects.filter(username__icontains=query)
+        users = User.objects.filter(username__icontains=query) | User.objects.filter(email__icontains=query)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+
 
 class SignupView(APIView):
     def post(self, request):
