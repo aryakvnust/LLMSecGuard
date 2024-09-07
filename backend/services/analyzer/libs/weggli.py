@@ -1,12 +1,20 @@
 import subprocess
-import json
 import re
 
 PREFIX = r'^C:\\'
 
+
 def run_weggli_analysis(file_path, language, weggli_rule):
     # Construct the weggli command
-    command = ['weggli', '--cpp', '-n', '-A', '0', '-B', '0', weggli_rule, file_path]
+    command = ['weggli', '-n', '-A', '0', '-B', '0']
+
+    if language == "cpp":
+        command.append("--cpp")
+
+    command.append(weggli_rule)
+    command.append(file_path)
+
+    print("[ANALYSIS ENGINE]\tRUNNING COMMAND\t: ", " ".join(command))
 
     # Run the command and capture the output
     result = subprocess.run(command, stdout=subprocess.PIPE)
@@ -33,21 +41,21 @@ def parse_weggli_output(output):
         if re.match(PREFIX, line):
             current_file = line.split(':')[1].strip()
             skip = True
-            
+
         # If the line contains a code snippet, parse it and add it to the parsed results
         elif re.match(r'^\s*\d+:', line):
-            
+
             if skip == True:
                 skip = False
                 continue
-                
+
             line_number, code = line.split(':', 1)
             parsed_results.append({
                 'file': current_file,
                 'line': int(line_number.strip()),
                 'code': code.strip()
             })
-            
+
             skip = True
 
     # Return the parsed results

@@ -6,8 +6,9 @@ import uuid
 import json
 import re
 import concurrent.futures
-    
+
 app = Flask(__name__)
+
 
 @app.route('/weggli', methods=['POST'])
 def weggli_post():
@@ -25,7 +26,6 @@ def weggli_post():
 
     results = []
 
-
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
         for rule in RULES:
@@ -37,9 +37,9 @@ def weggli_post():
             for res in result:
                 res['rule'] = rule['id']
                 results.append(result)
-                
+
         print(results)
-        
+
     shutil.rmtree(dir_path)
 
     return {'status': 'success', 'uuid': uuid_str, 'results': flatten_extend(results)}, 200

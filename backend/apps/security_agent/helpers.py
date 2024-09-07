@@ -6,6 +6,7 @@ from apps.prompt_agent.models import LlmModel
 import requests
 import datetime
 
+
 def analyze_code(user, data, model_id):
     analyzers = Analyzer.objects.filter(is_public=True)
     model = LlmModel.objects.get(id=model_id)
@@ -25,7 +26,7 @@ def analyze_code(user, data, model_id):
         result = requests.post(analyzer.url, json={
             'lang': data['lang'],
             'code': data['code'],
-            'rules': [{ 
+            'rules': [{
                 'id': rule.id,
                 'rule': rule.rule
             } for rule in rules.values()]
@@ -55,11 +56,13 @@ def analyze_code(user, data, model_id):
 
         for res in results:
             print("===== RES: ", res)
-            query += "- " + res['rule']['name'] + "(" + res['rule']['description'] + ") at line " + str(res['line']) + "\n"
-            
+            query += "- " + res['rule']['name'] + "(" + res['rule']['description'] + ") at line " + str(
+                res['line']) + "\n"
+
         query += f"""\n\ncode:\n```{data['lang']}\n{data['code']}\n```\n\n"""
 
-        query += "\n\n    Only return the code, DONT'T include any other information,\n    such as a preamble or suffix.\n"
+        query += "\n\n    Only return the code, DONT'T include any other information"
+        query += "\n    such as a preamble or suffix.\n"
 
         fix = model.query(query)
         fix = fix.strip()
