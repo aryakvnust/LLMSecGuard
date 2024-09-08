@@ -32,6 +32,17 @@ class AnalyzerViewSet(ModelViewSet):
             'code': request.data['code']
         }, model.id)
 
+        iteration = 0
+        while len(results['results'] > 0):
+            iteration += 1
+            results = analyze_code(request.user, {
+                'lang': lang,
+                'code': request.data['code']
+            }, model.id)
+
+            if iteration > 3:
+                break
+
         # DEMO
         # import json
         # from time import sleep
@@ -91,4 +102,3 @@ class AnalyzerViewSet(ModelViewSet):
 class RuleViewSet(ModelViewSet):
     queryset = Rule.objects.all()
     serializer_class = RuleSerializer
-
